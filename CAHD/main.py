@@ -19,7 +19,7 @@ if __name__ == "__main__":
     #alpha = 3;
 
     nameFile = "BMS1_spmf.txt"
-    df = DataFrame(nameFile, size, s, qi)
+    df = dataframe(nameFile, size, s, qi)
 
 
 
