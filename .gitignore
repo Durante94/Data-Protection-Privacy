@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 *.suo
 /.vs
+/CAHD/preElab.txt
+/CAHD/postElab.txt
