@@ -3,19 +3,19 @@ from DataFrame import DataFrame
 
 
 if __name__ == "__main__":
-    print("dimensioni del dataset:")
+    #print("dimensioni del dataset:")
     # size = input()
-    size = 1000
-    print("Grado di Privacy:")
+    size = 500
+    #print("Grado di Privacy:")
     # p = input()
     p = 10
-    print("numero di item sensibili:")
+    #print("numero di item sensibili:")
     # s = input()
     s = 10
-    print("numero di Quasi-Identifier:")
+    #print("numero di Quasi-Identifier:")
     # qi = input()
     qi = 4
-    print("valore di alpha desiderato (ottimale = 3):")
+    #print("valore di alpha desiderato (ottimale = 3):")
     # alpha = input()
     alpha = 3
 

@@ -14,8 +14,7 @@ class DataFrame:
 
     def df_creation(self):
         # TODO:
-        #   1.  lettura del dataset di input e salvataggio in un array di
-        #   transazioni
+        #   1. se size <= 12 esce un errore, verificare
         #   2.  creazione del dataframe dall'array di transizioni (vedere
         #   libreria pandas.dataframe)
         #   3.  creazione della matrice quadrata di dimensione size*size
@@ -25,7 +24,7 @@ class DataFrame:
         #       classe (importando scipy qui) oppure nel main.
 
         # APERTURA FILE
-        f = open(os.path.join(os.getcwd(), "CAHD\BMS1_spmf.txt"), "r")
+        f = open(os.path.join(os.getcwd(), "BMS1_spmf.txt"), "r")
         matrix = []
 
         # LETTURA FILE
@@ -55,7 +54,7 @@ class DataFrame:
         toDF = []
 
         # PRINT SU FILE STRUTTURA DATI
-        fPre = open(os.path.join(os.getcwd(), "CAHD\preElab.txt"), "w")
+        fPre = open(os.path.join(os.getcwd(), "preElab.txt"), "w")
         for row in matrix:
             for val in row:
                 fPre.write(str(val))
@@ -67,7 +66,7 @@ class DataFrame:
             toDF.append(matrix[rowIdx])
 
         # PRINT SU FILE DATI PERMUTATI
-        fPost = open(os.path.join(os.getcwd(), "CAHD\postElab.txt"), "w")
+        fPost = open(os.path.join(os.getcwd(), "postElab.txt"), "w")
         for row in toDF:
             for val in row:
                 fPost.write(str(val))
