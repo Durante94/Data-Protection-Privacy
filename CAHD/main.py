@@ -3,9 +3,9 @@ from DataFrame import DataFrame
 
 
 if __name__ == "__main__":
-    #print("dimensioni del dataset:")
+    #print("numero di item:")
     # size = input()
-    size = 500
+    size = 100
     #print("Grado di Privacy:")
     # p = input()
     p = 10

@@ -1,8 +1,9 @@
 import pandas as pd
 import os
 from scipy.sparse.csgraph import reverse_cuthill_mckee
-from scipy.sparse import csr_matrix
 from scipy.sparse import csc_matrix
+from mlxtend.preprocessing import TransactionEncoder
+from Plot import plot
 
 class DataFrame:
     # costruttore
@@ -13,70 +14,75 @@ class DataFrame:
         self.qi = qi
 
     def df_creation(self):
-        # TODO:
-        #   1. se size <= 12 esce un errore, verificare
-        #   2.  creazione del dataframe dall'array di transizioni (vedere
-        #   libreria pandas.dataframe)
-        #   3.  creazione della matrice quadrata di dimensione size*size
-        #   4.  estrazione SD e QI il dataframe creato potrà quindi essere dato
-        #   in pasto a scipy.sparse.csgraph.reverse_cuthill_mckee.
-        #       Decidere quindi se farlo direttamente all'interno di questa
-        #       classe (importando scipy qui) oppure nel main.
-
-        # APERTURA FILE
-        f = open(os.path.join(os.getcwd(), "BMS1_spmf.txt"), "r")
-        matrix = []
 
         # LETTURA FILE
-        for row in range(0, int(self.size)):
-            readedLine = f.readline().split()
-            matrix.append([])
+        path = os.path.join(os.getcwd(), "BMS1_spmf.txt")
+        matrix = []
+        with open(path) as fp:
+            for line in fp:
+                trans = [int(s) for s in line.split() if (s!='-1' and s!='-2')]
+                matrix.append(trans)
 
-            for val in readedLine:
-                if int(val) == -2: # fine linea
-                    break
+        # CODIFICA DEL DATASET DI TRANSAZIONI IN UN ARRAY NUMPY
+        te = TransactionEncoder()
+        te_ary = te.fit(matrix).transform(matrix)
 
-                if int(val) == -1: # elemento di separazione valori
-                    continue
+        # CREAZIONE DEL DATAFRAME
+        df = pd.DataFrame(te_ary, columns=te.columns_)
 
-                matrix[row].append(int(val))
+        # TAGLIO DEL DATAFRAME ED ASSEGNAZIONE QI E SD
+        if (self.size >= 497):
+            # TODO: ESTRAZIONE DI QI RANDOM (vedere df.sample)
+            # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.sample.html
 
-            # COMPLETAMENTO COLONNA PER OTTENERE MATRICE OMOGENEA QUADRATA
-            tmp = len(matrix[row])
-            if tmp < self.size:
-                matrix[row].extend([0] * (self.size - tmp)) # SIA BENEDETTO STACK OVERFLOW
+            # TODO: ESTRAZIONE DI SD RANDOM (vedere df.sample)
 
-        #CHIUSURA FILE
-        f.close()
+            # TODO: VERIFICA CHE QI ed SD NON SIANO UGUALI
 
-        revDF = reverse_cuthill_mckee(csr_matrix(matrix), False)
+            # AGGIUNTA DEI FAKE ITEMS
+            add_cols = self.size - 497
+            for i in range(0, add_cols):
+                df['fake_item_'+str(i)] = False
+        else:
+            # TODO: ESTRAZIONE DI QI RANDOM
 
-        toDF = []
+            # TODO ESTRAZIONE DI SD RANDOM
 
-        # PRINT SU FILE STRUTTURA DATI
-        fPre = open(os.path.join(os.getcwd(), "preElab.txt"), "w")
-        for row in matrix:
-            for val in row:
-                fPre.write(str(val))
-                fPre.write(', ')
-            fPre.write('\n')
-        fPre.close()
+            # TODO: VERIFICA CHE QI ED SD NON SIANO UGUALI
+            print("DEBUG: blocco < 497")
 
-        for rowIdx in revDF:
-            toDF.append(matrix[rowIdx])
+        # SELEZIONO UN SOTTOINSIEME QUADRATO (dimensioni size*size) DEL DATAFRAME
+        df = df.iloc[0:self.size, 0:self.size]
 
-        # PRINT SU FILE DATI PERMUTATI
-        fPost = open(os.path.join(os.getcwd(), "postElab.txt"), "w")
-        for row in toDF:
-            for val in row:
-                fPost.write(str(val))
-                fPost.write(', ')
-            fPost.write('\n')
-        fPost.close()
+        # CALCOLO IL VETTORE DELLE PERMUTAZIONI
+        graph = csc_matrix(df.values)
+        aux = reverse_cuthill_mckee(graph, False)
 
-        #CREAZIONE DATAFRAME
-        df = pd.DataFrame.from_records(toDF)
+        # GENERO LA BAND MATRIX
+        rows = list(df.index.values)
+        rows2 = []
+        for i in aux:
+            rows2.append(rows[i])
+        df = df.reindex(rows2)
+        cols = list(df.columns.values)
+        cols2 = []
+        for i in aux:
+            cols2.append(cols[i])
+        df = df[cols2]
 
-        return
+        # STAMPA DEL NUMERO DI TRANSAZIONI E ITEM TOTALI CONTENUTI NELLA BAND MATRIX
+        shape = df.shape
+        print("numero di transazioni:", shape[0]) # Righe
+        print("numero di items:", shape[1]) # Colonne
+
+        # PLOT DELLA BAND MATRIX
+        plot(df, "BAND MATRIX")
+
+
+
+
+
+
+
 
 
