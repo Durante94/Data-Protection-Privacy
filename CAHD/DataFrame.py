@@ -43,16 +43,19 @@ class DataFrame:
             add_cols = self.size - 497
             for i in range(0, add_cols):
                 df['fake_item_'+str(i)] = False
+
+            # SELEZIONO UN SOTTOINSIEME QUADRATO (dimensioni size*size) DEL DATAFRAME
+            df = df.iloc[0:self.size, 0:self.size]
         else:
+            # SELEZIONO UN SOTTOINSIEME QUADRATO (dimensioni size*size) DEL DATAFRAME
+            df = df.iloc[0:self.size, 0:self.size]
+
             # TODO: ESTRAZIONE DI QI RANDOM
 
             # TODO ESTRAZIONE DI SD RANDOM
 
             # TODO: VERIFICA CHE QI ED SD NON SIANO UGUALI
             print("DEBUG: blocco < 497")
-
-        # SELEZIONO UN SOTTOINSIEME QUADRATO (dimensioni size*size) DEL DATAFRAME
-        df = df.iloc[0:self.size, 0:self.size]
 
         # CALCOLO IL VETTORE DELLE PERMUTAZIONI
         graph = csc_matrix(df.values)
@@ -79,6 +82,8 @@ class DataFrame:
 
         # PLOT DELLA BAND MATRIX
         plot(df, "BAND MATRIX")
+
+        # TODO: RETURN DEL DATAFRAME, SD E QI, PARAMETRI CHE SERVIRANNO PER APPLICARE CAHD
 
 
 
