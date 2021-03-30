@@ -5,7 +5,7 @@ from DataFrame import DataFrame
 if __name__ == "__main__":
     #print("numero di item:")
     # size = input()
-    size = 100
+    size = 150
     #print("Grado di Privacy:")
     # p = input()
     p = 10

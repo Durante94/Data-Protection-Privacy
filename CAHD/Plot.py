@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-def plot(df, title, rows=0, columns=0):
+def plot(df, title):
     shape = df.shape
     plt.title(title)
     plt.ylabel("Transactions")
