@@ -59,12 +59,14 @@ class DataFrame:
         aux = reverse_cuthill_mckee(graph, False)
 
         # GENERO LA BAND MATRIX
-        rows = list(df.index.values)
+        # vedere https://www.geeksforgeeks.org/how-to-get-rows-index-names-in-pandas-dataframe/
+        rows = list(df.index.values)    # recupero i valori degli indici (righe)
         rows2 = []
         for i in aux:
-            rows2.append(rows[i])
-        df = df.reindex(rows2)
-        cols = list(df.columns.values)
+            rows2.append(rows[i])       # li riordino secondo gli indici salvati in aux
+        df = df.reindex(rows2)          # carico il nuovo indice
+        # vedere https://www.geeksforgeeks.org/how-to-get-column-names-in-pandas-dataframe/
+        cols = list(df.columns.values)      # recupero i valori delle colonne
         cols2 = []
         for i in aux:
             cols2.append(cols[i])
