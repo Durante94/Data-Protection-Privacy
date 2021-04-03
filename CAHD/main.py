@@ -24,5 +24,3 @@ if __name__ == "__main__":
     df.df_creation()
     # cahd = CAHD(df.df, p, alpha, df.SDcols, df.QIcols)
     # cahd.compute_histogram()
-
-    print('porcoddio')
