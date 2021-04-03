@@ -5,22 +5,26 @@ from scipy.sparse import csc_matrix
 from mlxtend.preprocessing import TransactionEncoder
 from Plot import plot
 
+
 class DataFrame:
-    # costruttore
+    # constructor
     def __init__(self, namefile, size, s, qi):
         self.nameFile = namefile
         self.size = size
         self.s = s
         self.qi = qi
+        self.SDcols = None
+        self.QIcols = None
+        self.df = None
 
     def df_creation(self):
 
-        # LETTURA FILE
+        # READING FILE
         path = os.path.join(os.getcwd(), "BMS1_spmf.txt")
         matrix = []
         with open(path) as fp:
             for line in fp:
-                trans = [int(s) for s in line.split() if (s!='-1' and s!='-2')]
+                trans = [int(s) for s in line.split() if (s != '-1' and s != '-2')]
                 matrix.append(trans)
 
         # CODIFICA DEL DATASET DI TRANSAZIONI IN UN ARRAY NUMPY
@@ -30,32 +34,33 @@ class DataFrame:
         # CREAZIONE DEL DATAFRAME
         df = pd.DataFrame(te_ary, columns=te.columns_)
 
+        # ESTRAZIONE DI QI E SD RANDOM
+
+        dfCols = df.sample(self.qi + self.s, axis=1).columns.values
+        # print(dfCols)
+
+        # prendiamo le self.qi colonne e le salviamo in self
+
+        self.QIcols = dfCols[:self.qi]
+        # print(QIcols)
+
+        # prendiamo le altre self.s colonne e le salviamo in self
+
+        self.SDcols = dfCols[self.qi:]
+        # print(SDcols)
+
         # TAGLIO DEL DATAFRAME ED ASSEGNAZIONE QI E SD
-        if (self.size >= 497):
-            # TODO: ESTRAZIONE DI QI RANDOM (vedere df.sample)
+        if self.size >= 497:
+
             # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.sample.html
-
-            # TODO: ESTRAZIONE DI SD RANDOM (vedere df.sample)
-
-            # TODO: VERIFICA CHE QI ed SD NON SIANO UGUALI
 
             # AGGIUNTA DEI FAKE ITEMS
             add_cols = self.size - 497
             for i in range(0, add_cols):
-                df['fake_item_'+str(i)] = False
+                df['fake_item_' + str(i)] = False
 
-            # SELEZIONO UN SOTTOINSIEME QUADRATO (dimensioni size*size) DEL DATAFRAME
-            df = df.iloc[0:self.size, 0:self.size]
-        else:
-            # SELEZIONO UN SOTTOINSIEME QUADRATO (dimensioni size*size) DEL DATAFRAME
-            df = df.iloc[0:self.size, 0:self.size]
-
-            # TODO: ESTRAZIONE DI QI RANDOM
-
-            # TODO ESTRAZIONE DI SD RANDOM
-
-            # TODO: VERIFICA CHE QI ED SD NON SIANO UGUALI
-            print("DEBUG: blocco < 497")
+        # SELEZIONO UN SOTTOINSIEME QUADRATO (dimensioni size*size) DEL DATAFRAME
+        df = df.iloc[0:self.size, 0:self.size]
 
         # CALCOLO IL VETTORE DELLE PERMUTAZIONI
         graph = csc_matrix(df.values)
@@ -63,33 +68,25 @@ class DataFrame:
 
         # GENERO LA BAND MATRIX
         # vedere https://www.geeksforgeeks.org/how-to-get-rows-index-names-in-pandas-dataframe/
-        rows = list(df.index.values)    # recupero i valori degli indici (righe)
+        rows = list(df.index.values)  # recupero i valori degli indici (righe)
         rows2 = []
         for i in aux:
-            rows2.append(rows[i])       # li riordino secondo gli indici salvati in aux
-        df = df.reindex(rows2)          # carico il nuovo indice
+            rows2.append(rows[i])  # li riordino secondo gli indici salvati in aux
+        df = df.reindex(rows2)  # carico il nuovo indice
         # vedere https://www.geeksforgeeks.org/how-to-get-column-names-in-pandas-dataframe/
-        cols = list(df.columns.values)      # recupero i valori delle colonne
+        cols = list(df.columns.values)  # recupero i valori delle colonne
         cols2 = []
         for i in aux:
             cols2.append(cols[i])
         df = df[cols2]
+        self.df = df
 
         # STAMPA DEL NUMERO DI TRANSAZIONI E ITEM TOTALI CONTENUTI NELLA BAND MATRIX
         shape = df.shape
-        print("numero di transazioni:", shape[0]) # Righe
-        print("numero di items:", shape[1]) # Colonne
+        print("numero di transazioni:", shape[0])  # Righe
+        print("numero di items:", shape[1])  # Colonne
 
         # PLOT DELLA BAND MATRIX
         plot(df, "BAND MATRIX")
 
-        # TODO: RETURN DEL DATAFRAME, SD E QI, PARAMETRI CHE SERVIRANNO PER APPLICARE CAHD
-
-
-
-
-
-
-
-
-
+        return
