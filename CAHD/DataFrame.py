@@ -32,29 +32,37 @@ class DataFrame:
         te_ary = te.fit(matrix).transform(matrix)
         df = pd.DataFrame(te_ary, columns=te.columns_)
 
-        # ESTRAZIONE DI QI E SD RANDOM
-
-        dfCols = df.sample(self.qi + self.sd, axis=1).columns.values
-        # print(dfCols)
-
-        # prendiamo le self.qi colonne e le salviamo in self
-
-        self.QIcols = dfCols[:self.qi]
-
-        # prendiamo le altre self.s colonne e le salviamo in self
-
-        self.SDcols = dfCols[self.qi:]
-
-        # TAGLIO DEL DATAFRAME ED ASSEGNAZIONE QI E SD
+        # SE LA DIMENSIONE E' > DEL DATASET ALLORA SELEZIONO QI, SD E SUCCESSIVAMENTE AGGIUNGO FAKE ITEMS
         if self.size >= 497:
+            # ESTRAZIONE DI QI E SD RANDOM
+            dfCols = df.sample(self.qi + self.sd, axis=1).columns.values
+            # print(dfCols)
+
+            # prendiamo le self.qi colonne e le salviamo in self
+            self.QIcols = dfCols[:self.qi]
+
+            # prendiamo le altre self.s colonne e le salviamo in self
+            self.SDcols = dfCols[self.qi:]
 
             # AGGIUNTA DEI FAKE ITEMS
             add_cols = self.size - 497
             for i in range(0, add_cols):
                 df['fake_item_' + str(i)] = False
 
-        # SELEZIONO UN SOTTOINSIEME QUADRATO (dimensioni size*size) DEL DATAFRAME
+        # SELEZIONO UN SOTTOINSIEME QUADRATO (dimensioni size*size) DEL DATAFRAME -> TAGLIO DEL DF
         df = df.iloc[0:self.size, 0:self.size]
+
+        # SE LA DIMENSIONE E' MINORE DI 497 SELEZIONO QI ED SD SUL DF TAGLIATO
+        if self.size <= 497:
+            # ESTRAZIONE DI QI E SD RANDOM
+            dfCols = df.sample(self.qi + self.sd, axis=1).columns.values
+            # print(dfCols)
+
+            # prendiamo le self.qi colonne e le salviamo in self
+            self.QIcols = dfCols[:self.qi]
+
+            # prendiamo le altre self.s colonne e le salviamo in self
+            self.SDcols = dfCols[self.qi:]
 
         # CALCOLO IL VETTORE DELLE PERMUTAZIONI
         graph = csc_matrix(df.values)
@@ -71,6 +79,5 @@ class DataFrame:
         for i in aux:
             cols2.append(cols[i])
         df = df[cols2]
-        self.df = df
 
-        return self.df, self.SDcols, self.QIcols
+        return df, self.SDcols, self.QIcols

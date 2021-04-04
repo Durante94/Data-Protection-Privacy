@@ -5,7 +5,7 @@ from Plot import plot
 if __name__ == "__main__":
     # print("numero di item:")
     # size = input()
-    size = 700
+    size = 14
     # print("Grado di Privacy:")
     # p = input()
     p = 10
@@ -38,5 +38,5 @@ if __name__ == "__main__":
     print("numero di Quasi Identifier:", qi)
     print("quasi identifier:", QIcols)
 
-    cahd = CAHD(df, p, alpha, SDcols, QIcols)
-    cahd.compute_histogram()
+    #cahd = CAHD(df, p, alpha, SDcols, QIcols)
+    #cahd.compute_histogram()
