@@ -8,10 +8,10 @@ from Plot import plot
 
 class DataFrame:
     # constructor
-    def __init__(self, namefile, size, s, qi):
+    def __init__(self, namefile, size, sd, qi):
         self.nameFile = namefile
         self.size = size
-        self.s = s
+        self.sd = sd
         self.qi = qi
         self.SDcols = None
         self.QIcols = None
@@ -27,32 +27,26 @@ class DataFrame:
                 trans = [int(s) for s in line.split() if (s != '-1' and s != '-2')]
                 matrix.append(trans)
 
-        # CODIFICA DEL DATASET DI TRANSAZIONI IN UN ARRAY NUMPY
+        # CODIFICA DEL DATASET DI TRANSAZIONI IN UN ARRAY NUMPY E CREAZIONE DEL DATAFRAME
         te = TransactionEncoder()
         te_ary = te.fit(matrix).transform(matrix)
-
-        # CREAZIONE DEL DATAFRAME
         df = pd.DataFrame(te_ary, columns=te.columns_)
 
         # ESTRAZIONE DI QI E SD RANDOM
 
-        dfCols = df.sample(self.qi + self.s, axis=1).columns.values
+        dfCols = df.sample(self.qi + self.sd, axis=1).columns.values
         # print(dfCols)
 
         # prendiamo le self.qi colonne e le salviamo in self
 
         self.QIcols = dfCols[:self.qi]
-        # print(QIcols)
 
         # prendiamo le altre self.s colonne e le salviamo in self
 
         self.SDcols = dfCols[self.qi:]
-        # print(SDcols)
 
         # TAGLIO DEL DATAFRAME ED ASSEGNAZIONE QI E SD
         if self.size >= 497:
-
-            # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.sample.html
 
             # AGGIUNTA DEI FAKE ITEMS
             add_cols = self.size - 497
@@ -67,13 +61,11 @@ class DataFrame:
         aux = reverse_cuthill_mckee(graph, False)
 
         # GENERO LA BAND MATRIX
-        # vedere https://www.geeksforgeeks.org/how-to-get-rows-index-names-in-pandas-dataframe/
         rows = list(df.index.values)  # recupero i valori degli indici (righe)
         rows2 = []
         for i in aux:
             rows2.append(rows[i])  # li riordino secondo gli indici salvati in aux
         df = df.reindex(rows2)  # carico il nuovo indice
-        # vedere https://www.geeksforgeeks.org/how-to-get-column-names-in-pandas-dataframe/
         cols = list(df.columns.values)  # recupero i valori delle colonne
         cols2 = []
         for i in aux:
@@ -81,12 +73,4 @@ class DataFrame:
         df = df[cols2]
         self.df = df
 
-        # STAMPA DEL NUMERO DI TRANSAZIONI E ITEM TOTALI CONTENUTI NELLA BAND MATRIX
-        shape = df.shape
-        print("numero di transazioni:", shape[0])  # Righe
-        print("numero di items:", shape[1])  # Colonne
-
-        # PLOT DELLA BAND MATRIX
-        plot(df, "BAND MATRIX")
-
-        return
+        return self.df, self.SDcols, self.QIcols
