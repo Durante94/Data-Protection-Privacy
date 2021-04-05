@@ -38,5 +38,5 @@ if __name__ == "__main__":
     print("numero di Quasi Identifier:", qi)
     print("quasi identifier:", QIcols)
 
-    #cahd = CAHD(df, p, alpha, SDcols, QIcols)
-    #cahd.compute_histogram()
+    cahd = CAHD(df, p, alpha, SDcols, QIcols)
+    cahd.compute_histogram()

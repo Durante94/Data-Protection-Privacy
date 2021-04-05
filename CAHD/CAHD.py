@@ -13,12 +13,34 @@ class CAHD:
 
 
     def compute_histogram(self):
+        """
         histogram = dict()
         for sd in self.SDCols:
             histogram[str(sd)] = self.df[str(sd)]
         return histogram
+        """
+        self.hist = dict(self.df[self.SDCols].sum())
+        print(self.hist)
+
+    def checkPrivacy(self):
+        for value in self.hist.values():
+            if value * self.p >= len(self.df)-1:
+                return False
+        return True
+
+    def checkConflict(self):
+
 
     def startAlgorithm(self):
-        df = pd.DataFrame.hist(self.df, self.SDCols)
-        print(df)
+        self.compute_histogram()
+        satisfiable = False
+        while not satisfiable and self.p > 0:
+            satisfiable = self.checkPrivacy()
+            if not satisfiable:
+                self.checkPrivacy()-1
+        print(("Privacy degree satisfiable: ", self.p))
+        remaining = len(self.df)
+
+
+
 
