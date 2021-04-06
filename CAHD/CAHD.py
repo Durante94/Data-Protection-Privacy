@@ -29,7 +29,7 @@ class CAHD:
         return True
 
     def checkConflict(self):
-
+        return
 
     def startAlgorithm(self):
         self.compute_histogram()
