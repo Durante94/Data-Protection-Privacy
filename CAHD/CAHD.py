@@ -11,25 +11,27 @@ class CAHD:
         self.SDvals = SDvals
         self.QIvals = QIvals
         self.hist = dict()
-        self.prova = dict()
-        for sd in self.SDvals:
-            self.hist[sd] = 0
+        # self.prova = dict()
 
     def compute_histogram(self):
         # DEBUG (da rimuovere)
-        #for index, row in self.df.iterrows():
+        # for index, row in self.df.iterrows():
         #    for column in self.df:
         #        if column in self.SDvals and (self.df.loc[row.name, column] == True):
         #            self.hist[column] += 1
+        self.hist = dict(self.df[self.SDvals].sum())
+        # print(self.hist)
+        empty = False
+        for v in self.hist.values():
+            empty = v > 0 or empty
+        if not empty:
+            print("No sensitive items")
+        return empty
 
-        for sd in self.SDvals:
-            for i, val in self.df[sd].items():
-                if val:
-                    self.hist[sd] += 1
-        print(self.hist)
-
-        self.prova = dict(self.df[self.SDvals].sum())
-        print(self.prova)
+    def sensitiveTransactions(self):
+        trans = set(list(np.where(self.df[self.SDvals] == True)[0]))
+        print("trans:", sorted(trans))
+        print(self.df.loc[trans])
 
     def checkPrivacy(self):
         for value in self.hist.values():
@@ -42,11 +44,16 @@ class CAHD:
         return
 
     def startAlgorithm(self):
-        self.compute_histogram()
+        if not self.compute_histogram():
+            return
         satisfiable = False
         while not satisfiable and self.p > 0:
             satisfiable = self.checkPrivacy()
             if not satisfiable:
-                self.checkPrivacy() - 1
+                self.p -= 1
         print(("Privacy degree satisfiable: ", self.p))
         remaining = len(self.df)
+        self.sensitiveTransactions()
+        tfile = open('test.txt', 'w')
+        tfile.write(self.df.to_string())
+        tfile.close()

@@ -30,7 +30,7 @@ class DataFrame:
         # CODIFICA DEL DATASET DI TRANSAZIONI IN UN ARRAY NUMPY E CREAZIONE DEL DATAFRAME
         te = TransactionEncoder()
         te_ary = te.fit(matrix).transform(matrix)
-        df = pd.DataFrame(te_ary) #, columns=te.columns_
+        df = pd.DataFrame(te_ary, columns=te.columns_)
 
         # SE LA DIMENSIONE E' > DEL DATASET ALLORA SELEZIONO QI, SD E SUCCESSIVAMENTE AGGIUNGO FAKE ITEMS
         if self.size >= 497:
