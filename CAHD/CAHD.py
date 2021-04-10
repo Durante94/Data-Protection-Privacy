@@ -53,6 +53,9 @@ class CAHD:
                 self.p -= 1
         print(("Privacy degree satisfiable: ", self.p))
         remaining = len(self.df)
+        
+        # TODO: buonanotte
+        
         self.sensitiveTransactions()
         tfile = open('test.txt', 'w')
         tfile.write(self.df.to_string())
