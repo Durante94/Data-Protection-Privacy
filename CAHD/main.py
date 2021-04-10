@@ -5,7 +5,7 @@ from Plot import plot
 if __name__ == "__main__":
     # print("numero di item:")
     # size = input()
-    size = 14
+    size = 450
     # print("Grado di Privacy:")
     # p = input()
     p = 10
