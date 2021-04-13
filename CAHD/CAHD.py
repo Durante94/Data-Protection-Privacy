@@ -11,14 +11,9 @@ class CAHD:
         self.SDvals = SDvals
         self.QIvals = QIvals
         self.hist = dict()
-        # self.prova = dict()
 
+    # INIZIALIZZO L'ISTOGRAMMA PER OGNI SD
     def compute_histogram(self):
-        # DEBUG (da rimuovere)
-        # for index, row in self.df.iterrows():
-        #    for column in self.df:
-        #        if column in self.SDvals and (self.df.loc[row.name, column] == True):
-        #            self.hist[column] += 1
         self.hist = dict(self.df[self.SDvals].sum())
         # print(self.hist)
         empty = False
@@ -54,7 +49,7 @@ class CAHD:
         print(("Privacy degree satisfiable: ", self.p))
         remaining = len(self.df)
         
-        # TODO: buonanotte
+        # TODO: creazione dei gruppi
         
         self.sensitiveTransactions()
         tfile = open('test.txt', 'w')

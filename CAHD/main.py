@@ -21,6 +21,7 @@ if __name__ == "__main__":
 
     nameFile = "BMS1_spmf.txt"
 
+    # CREAZIONE DEL DATAFRAME
     create_df = DataFrame(nameFile, size, sd, qi)
     df, SDcols, QIcols = create_df.df_creation()
 
@@ -38,5 +39,6 @@ if __name__ == "__main__":
     print("numero di Quasi Identifier:", qi)
     print("quasi identifier:", QIcols)
 
+    # AVVIO DEL CAHD
     cahd = CAHD(df, p, alpha, SDcols, QIcols)
     cahd.startAlgorithm()
