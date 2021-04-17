@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from group import make_group
 
 
 class CAHD:
@@ -15,18 +16,12 @@ class CAHD:
     # INIZIALIZZO L'ISTOGRAMMA PER OGNI SD
     def compute_histogram(self):
         self.hist = dict(self.df[self.SDvals].sum())
-        # print(self.hist)
         empty = False
         for v in self.hist.values():
             empty = v > 0 or empty
         if not empty:
             print("No sensitive items")
         return empty
-
-    def sensitiveTransactions(self):
-        trans = set(list(np.where(self.df[self.SDvals] == True)[0]))
-        print("trans:", sorted(trans))
-        print(self.df.loc[trans])
 
     def checkPrivacy(self):
         for value in self.hist.values():
@@ -49,9 +44,7 @@ class CAHD:
         print(("Privacy degree satisfiable: ", self.p))
         remaining = len(self.df)
         
-        # TODO: creazione dei gruppi
-        
-        self.sensitiveTransactions()
-        tfile = open('test.txt', 'w')
-        tfile.write(self.df.to_string())
-        tfile.close()
+        # CREAZIONE DEI GRUPPI
+        result = make_group(self.df, self.SDvals, self.QIvals, self.p, self.alpha, self.hist, self.df.shape[0], remaining)
+
+

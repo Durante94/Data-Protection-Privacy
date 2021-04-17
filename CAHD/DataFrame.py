@@ -3,7 +3,7 @@ import os
 from scipy.sparse.csgraph import reverse_cuthill_mckee
 from scipy.sparse import csc_matrix
 from mlxtend.preprocessing import TransactionEncoder
-from Plot import plot
+from sklearn.utils import shuffle
 
 
 class DataFrame:
@@ -51,6 +51,7 @@ class DataFrame:
 
         # SELEZIONO UN SOTTOINSIEME QUADRATO (dimensioni size*size) DEL DATAFRAME -> TAGLIO DEL DF
         df = df.iloc[0:self.size, 0:self.size]
+        df = shuffle(df)
 
         # SE LA DIMENSIONE E' MINORE DI 497 SELEZIONO QI ED SD SUL DF TAGLIATO
         if self.size <= 497:
