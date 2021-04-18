@@ -29,10 +29,6 @@ class CAHD:
                 return False
         return True
 
-    def checkConflict(self):
-
-        return
-
     def startAlgorithm(self):
         if not self.compute_histogram():
             return
