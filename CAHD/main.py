@@ -5,7 +5,7 @@ from Plot import plot
 if __name__ == "__main__":
     # print("numero di item:")
     # size = input()
-    size = 200
+    size = 100
     # print("Grado di Privacy:")
     # p = input()
     p = 10
@@ -31,7 +31,7 @@ if __name__ == "__main__":
     print("numero di items:", shape[1])  # Colonne
 
     # PLOT DELLA BAND MATRIX
-    plot(df, "BAND MATRIX")
+    # plot(df, "BAND MATRIX")
 
     # PRINT DEGLI SD E QI
     print("numero di sensitive data:", sd)

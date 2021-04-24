@@ -37,8 +37,8 @@ class CAHD:
             satisfiable = self.checkPrivacy()
             if not satisfiable:
                 self.p -= 1
-        print(("Privacy degree satisfiable: ", self.p))
-        remaining = len(self.df)
+        print("Privacy degree satisfiable: ", self.p)
+        remaining = len(self.df.index)
         
         # CREAZIONE DEI GRUPPI
         result = make_group(self.df, self.SDvals, self.QIvals, self.p, self.alpha, self.hist, self.df.shape[0], remaining)
