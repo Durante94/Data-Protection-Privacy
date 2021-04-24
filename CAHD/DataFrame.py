@@ -20,7 +20,7 @@ class DataFrame:
     def df_creation(self):
 
         # READING FILE
-        path = os.path.join(os.getcwd(), "CAHD/BMS1_spmf.txt")
+        path = os.path.join(os.getcwd(), "BMS1_spmf.txt")
         matrix = []
         with open(path) as fp:
             for line in fp:
