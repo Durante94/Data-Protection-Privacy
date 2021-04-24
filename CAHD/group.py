@@ -31,7 +31,7 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
                 tmp = df.iloc[[i]].index
                 break
         i += 1
-    print("Vecchio", hist)
+
     while remaining > p:
         # SD già in t con cui non devo andare in conflitto
         SD_conflict = []
@@ -48,6 +48,7 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
         # Array del gruppo (riga 6 pseudocodice), righe del dataframe che
         # anonimizziamo
         group = []
+        conflict = False
 
         # ciclo per i successori di t
         range_count = 0
@@ -88,8 +89,7 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
                     else:
                         conflict = True
                         break
-            # la riga non contiene dati sensibili in conflitto la aggiungo alla
-            # CL
+            # la riga non contiene dati sensibili in conflitto la aggiungo alla CL
             if not conflict:
                 CL.append(pred_row.name)
                 range_count += 1
@@ -105,8 +105,7 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
             for y in QIvals:
                 if df.loc[tmp[0]][y] == df.loc[x][y]:
                     QIDcount += 1
-            # aggiungo alla tupla il numero di riga accoppiata al num.  di QI
-            # uguali trovati
+            # aggiungo alla tupla il numero di riga accoppiata al numero  di QI uguali trovati
             CLtmp.append(tuple((x, QIDcount)))
 
         # sort della lista in ordine decrescente per numero di QID
@@ -133,7 +132,6 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
 
         test = True
         remaining -= len(group)
-        print("SDEF", new_hist)
         for _ in SDvals:
             if new_hist[_] * p > remaining:
                 remaining += len(group)
@@ -143,29 +141,30 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
 
         if test:
             # test passato
-            dfResult.append(df.loc[group, :])
+            # dfResult.append(df.loc[group, :])
+            dfResult = dfResult.append(df.loc[group, :])
 
             # cerco il prossimo SD
             SDfound = False
             i = SDindex_tmp
-            while i < size and not SDfound:
+            while i < len(df) and not SDfound:
                 for j in SDvals:
                     if df.iloc[i][j] and df.iloc[[i]].index not in group:
                         SDfound = True
-                        # recupero l'indice di riga della prima occorrenza di
-                        # un SD
+                        # recupero l'indice di riga della prima occorrenza di un SD
                         tmp = df.iloc[[i]].index
                         break
                 i += 1
 
-            df.drop(group)
+            # df.drop(group)
+            df = df.drop(group)
             hist = copy.deepcopy(new_hist)
             sdResult.append(group_SD)
 
-            # se non ce ne sono più sensibili esco perchè devo solo scaricare in
-            # gruppi i rimanenti
+            # se non ce ne sono più sensibili esco perchè devo solo scaricare in gruppi i rimanenti
             if not SDfound:
-                dfResult.append(df)
+                # dfResult.append(df)
+                dfResult = dfResult.append(df)
                 df = df.iloc[0:0]
                 break
         else:
@@ -189,9 +188,11 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
                             SDfound = True
                             tmp = df.iloc[[i]].index
                             break
-        remaining = 0  # DEBUG
+
+    print("Dimensione df", len(df))
 
     if not df.empty:
+
         # abbiamo ancora delle righe nel df, ne abbiamo raccolte meno di p
         k = 0
         group_SD = []
@@ -213,7 +214,8 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
             print("Errore: sono rimasti degli SD")
             return -1, -1
 
-        dfResult.append(df)
+        # dfResult.append(df)
+        dfResult = dfResult.append(df)
         df = df.iloc[0:0]
 
         if group_SD:
@@ -242,8 +244,8 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
         nameGroup = "Name Group" + str(countGroup)
         SD_DF.loc[nameGroup] = False
 
-    print(dfResult)
-    print(sdResult)
-    print(SD_DF)
+    print("dfResult", dfResult)
+    print("sdResult", sdResult)
+    print("SD_DF", SD_DF)
 
     return dfResult, SD_DF

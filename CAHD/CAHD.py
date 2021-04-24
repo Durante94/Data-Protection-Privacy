@@ -19,9 +19,9 @@ class CAHD:
         countSDinDf = 0
         for v in self.hist.values():
             countSDinDf += v 
-        if not empty:
+        if countSDinDf == 0:
             print("No sensitive items")
-        return empty
+        return countSDinDf
 
     def checkPrivacy(self):
         for value in self.hist.values():
@@ -43,5 +43,6 @@ class CAHD:
         
         # CREAZIONE DEI GRUPPI
         result = make_group(self.df, self.SDvals, self.QIvals, self.p, self.alpha, self.hist, self.df.shape[0], remaining)
-
+        print("len", len(self.hist))
+        return result, len(self.hist)
 
