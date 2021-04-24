@@ -1,3 +1,4 @@
+from KLdivergence import KLdivergence
 from DataFrame import DataFrame
 from CAHD import CAHD
 from Plot import plot
@@ -42,3 +43,7 @@ if __name__ == "__main__":
     # AVVIO DEL CAHD
     cahd = CAHD(df, p, alpha, SDcols, QIcols)
     cahd.startAlgorithm()
+
+    # Calcolo la KL divergence
+
+    # KL = KLdivergence(QIcols, SDcols, df, qi, sd, p, count_SD_T, dfResult, SD_DF)
