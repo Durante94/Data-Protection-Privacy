@@ -19,9 +19,9 @@ class CAHD:
         countSDinDf = 0
         for v in self.hist.values():
             countSDinDf += v 
-        if not empty:
+        if countSDinDf == 0:
             print("No sensitive items")
-        return empty
+        return countSDinDf
 
     def checkPrivacy(self):
         for value in self.hist.values():
