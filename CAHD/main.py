@@ -39,6 +39,8 @@ if __name__ == "__main__":
     print("numero di Quasi Identifier:", qi)
     print("quasi identifier:", QIcols)
 
+    print(df[SDcols].to_string())
+
     # AVVIO DEL CAHD
     cahd = CAHD(df, p, alpha, SDcols, QIcols)
-    cahd.startAlgorithm()
+    #cahd.startAlgorithm()
