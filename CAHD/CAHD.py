@@ -16,9 +16,9 @@ class CAHD:
     # INIZIALIZZO L'ISTOGRAMMA PER OGNI SD
     def compute_histogram(self):
         self.hist = dict(self.df[self.SDvals].sum())
-        empty = False
+        countSDinDf = 0
         for v in self.hist.values():
-            empty = v > 0 or empty
+            countSDinDf += v 
         if not empty:
             print("No sensitive items")
         return empty
