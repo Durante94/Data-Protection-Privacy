@@ -244,8 +244,8 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
         nameGroup = "Name Group" + str(countGroup)
         SD_DF.loc[nameGroup] = False
 
-    print("dfResult", dfResult)
-    print("sdResult", sdResult)
-    print("SD_DF", SD_DF)
+    # print("dfResult", dfResult)
+    # print("sdResult", sdResult)
+    # print("SD_DF", SD_DF)
 
     return dfResult, SD_DF

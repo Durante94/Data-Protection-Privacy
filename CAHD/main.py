@@ -42,8 +42,9 @@ if __name__ == "__main__":
 
     # AVVIO DEL CAHD
     cahd = CAHD(df, p, alpha, SDcols, QIcols)
-    cahd.startAlgorithm()
-
+    dfResult, count = cahd.startAlgorithm()
+    print("Count", count)
+    print("Result", dfResult)
     # Calcolo la KL divergence
 
     # KL = KLdivergence(QIcols, SDcols, df, qi, sd, p, count_SD_T, dfResult, SD_DF)

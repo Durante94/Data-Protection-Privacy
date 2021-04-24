@@ -43,6 +43,5 @@ class CAHD:
         
         # CREAZIONE DEI GRUPPI
         result = make_group(self.df, self.SDvals, self.QIvals, self.p, self.alpha, self.hist, self.df.shape[0], remaining)
-        print("len", len(self.hist))
-        return result, len(self.hist)
+        return result, count
 
