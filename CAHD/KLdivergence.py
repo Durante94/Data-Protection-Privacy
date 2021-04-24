@@ -10,7 +10,6 @@ def KLdivergence(QIvals, SDvals, df, qi, sd, p, count_SD, dfResult, SD_DF):
         if column not in arraySDQI:
             df.drop(column, axis=1, inplace=True)
     df = df[arraySDQI]
-
     # Combinazioni per celle
 
     iterList = list(itertools.product([False, True], repeat=qi))
@@ -74,14 +73,16 @@ def KLdivergence(QIvals, SDvals, df, qi, sd, p, count_SD, dfResult, SD_DF):
             b = groupDict[x]
             a = 0
             for y in SDvals:
-                if sd.loc[x, y]:
+                if SD_DF.loc[x, y]:
                     a += 1
             EstG += (a * b) / p
 
         # Calcolo Est sommando i (a*b)/p che ottengo da ogni gruppo
+
         EstC = EstG / count_SD
         Est.append(EstC)
         Act.append(cellCount / count_SD)
+        print("ESt", EstG)
 
         # Rimuovo dal df le transazioni che facevano parte della cella prima di partire
         # con l'iterazione per cella successiva
@@ -90,6 +91,7 @@ def KLdivergence(QIvals, SDvals, df, qi, sd, p, count_SD, dfResult, SD_DF):
     KLdiv = 0
     if np.array_equal(Act, Est):
         return KLdiv
+
     for idx, val in enumerate(Act):
         if Act[idx] == 0:
             continue
