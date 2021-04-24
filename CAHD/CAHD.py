@@ -30,7 +30,8 @@ class CAHD:
         return True
 
     def startAlgorithm(self):
-        if not self.compute_histogram():
+        count = self.compute_histogram()
+        if count == 0:
             return
         satisfiable = False
         while not satisfiable and self.p > 0:
