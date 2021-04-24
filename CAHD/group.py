@@ -209,7 +209,7 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
                 Ok = False
 
         if Ok:
-            print("Pazzo per Gesù")
+            print("Risultato algoritmo corretto")
         else:
             print("Errore: sono rimasti degli SD")
             return -1, -1
@@ -233,7 +233,7 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
     for x in sdResult:
         countGroup += 1
         for y in x:
-            nameGroup = "Name Group" + str(countGroup)
+            nameGroup = "Group" + str(countGroup)
             SD_DF.loc[nameGroup] = False
             SD_DF.loc[nameGroup][y] = True
     remainingGroups = groupNumber - len(sdResult)
@@ -241,11 +241,7 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
         # Rimangono i gruppi senza transazioni sensibili
         remainingGroups -= 1
         countGroup += 1
-        nameGroup = "Name Group" + str(countGroup)
+        nameGroup = "Group" + str(countGroup)
         SD_DF.loc[nameGroup] = False
-
-    # print("dfResult", dfResult)
-    # print("sdResult", sdResult)
-    # print("SD_DF", SD_DF)
 
     return dfResult, SD_DF

@@ -10,17 +10,15 @@ def KLdivergence(QIvals, SDvals, df, qi, sd, p, count_SD, dfResult, SD_DF):
         if column not in arraySDQI:
             df.drop(column, axis=1, inplace=True)
     df = df[arraySDQI]
-    # Combinazioni per celle
 
+    # Combinazioni per celle
     iterList = list(itertools.product([False, True], repeat=qi))
 
     # Inizializzo array per contenere i valori di Act ed Est per ogni cella
-
     Act = []
     Est = []
 
     # Ciclo sulle combinazioni
-
     for _ in iterList:
         cellCount = 0
         count = 0
@@ -28,7 +26,7 @@ def KLdivergence(QIvals, SDvals, df, qi, sd, p, count_SD, dfResult, SD_DF):
         # arrayLabel contiene le transazioni appartenenenti alla cella ?
         arrayLabel = []
 
-        # groupCell array dei gruppi che intesecano la cella
+        # groupCell array dei gruppi che intersecano la cella
         groupCell = []
         groupDict = dict()
 
@@ -55,7 +53,7 @@ def KLdivergence(QIvals, SDvals, df, qi, sd, p, count_SD, dfResult, SD_DF):
                 # Index / p fornisce il gruppo di appartenenenza della transazione
                 group = "Group" + str(math.floor(index / p))
 
-                if group in groupCell:
+                if group not in groupCell:
                     groupCell.append(group)
                 if group in groupDict:
                     # Aumenta in un istogramma il contatore di transazione comprese nella cella per quel tale gruppo (per b)
@@ -82,7 +80,6 @@ def KLdivergence(QIvals, SDvals, df, qi, sd, p, count_SD, dfResult, SD_DF):
         EstC = EstG / count_SD
         Est.append(EstC)
         Act.append(cellCount / count_SD)
-        print("ESt", EstG)
 
         # Rimuovo dal df le transazioni che facevano parte della cella prima di partire
         # con l'iterazione per cella successiva
