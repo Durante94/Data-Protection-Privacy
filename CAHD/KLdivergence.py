@@ -4,29 +4,29 @@ import math
 
 
 def KLdivergence(QIvals, SDvals, df, qi, sd, p, count_SD, dfResult, SD_DF):
-    # Preparazione array contenente le label di QI e SD da usare per eliminare tutte le altre colonne
+    # Setup array containing the labels for QI e SD, in order to eliminate the other columns
     arraySDQI = np.append(QIvals, SDvals)
     for column in df:
         if column not in arraySDQI:
             df.drop(column, axis=1, inplace=True)
     df = df[arraySDQI]
 
-    # Combinazioni per celle
+    # COmbinations between cells
     iterList = list(itertools.product([False, True], repeat=qi))
 
-    # Inizializzo array per contenere i valori di Act ed Est per ogni cella
+    # Array initilization wich will conatain the values for Act and Est
     Act = []
     Est = []
 
-    # Ciclo sulle combinazioni
+    # Combinations cycle
     for _ in iterList:
         cellCount = 0
         count = 0
 
-        # arrayLabel contiene le transazioni appartenenenti alla cella ?
+        # arrayLabel contains the transactions for the label
         arrayLabel = []
 
-        # groupCell array dei gruppi che intersecano la cella
+        # groupCell contains the groups who intersect the label
         groupCell = []
         groupDict = dict()
 
@@ -35,7 +35,7 @@ def KLdivergence(QIvals, SDvals, df, qi, sd, p, count_SD, dfResult, SD_DF):
             stop = True
             for k in _:
 
-                # Fino a qi-1 ho i QI
+                # from 0 to qi-1 we have the QI
                 if i == qi:
                     break
                 if df.iloc[count, i] != k:
@@ -43,24 +43,24 @@ def KLdivergence(QIvals, SDvals, df, qi, sd, p, count_SD, dfResult, SD_DF):
                     break
                 i += 1
             if stop:
-                # Da QI a QI+SD-1 ho gli SD
+                # from qi to qi+sd-1 we have the SD
                 while i < qi + sd:
                     if df.iloc[count, i]:
                         cellCount += 1
                     i += 1
                 label = df.index[count]
                 index = dfResult.index.get_loc(label)
-                # Index / p fornisce il gruppo di appartenenenza della transazione
+                # Index / p retrieve in wich group belongs the transaction
                 group = "Group" + str(math.floor(index / p))
 
                 if group not in groupCell:
                     groupCell.append(group)
                 if group in groupDict:
-                    # Aumenta in un istogramma il contatore di transazione comprese nella cella per quel tale gruppo (per b)
-                    # ogni valore dell'istogramma sarà il valore di b per quel gruppo
+                    # increase the counter of transactions included in the group label in the histogram
+                    # each value of the histogram will be for the label in that group
                     groupDict[group] += 1
                 else:
-                    # Se non avevo già aggiunto quel gruppo
+                    # add in the group if not belongs to any
                     groupDict[group] = 1
                 arrayLabel.append(df.index[count])
             count += 1
@@ -75,14 +75,13 @@ def KLdivergence(QIvals, SDvals, df, qi, sd, p, count_SD, dfResult, SD_DF):
                     a += 1
             EstG += (a * b) / p
 
-        # Calcolo Est sommando i (a*b)/p che ottengo da ogni gruppo
+        # compute Est by sum (a*b)/p computed from each groups
 
         EstC = EstG / count_SD
         Est.append(EstC)
         Act.append(cellCount / count_SD)
 
-        # Rimuovo dal df le transazioni che facevano parte della cella prima di partire
-        # con l'iterazione per cella successiva
+        # Remove the cells belonging the transactions from df
         df.drop(arrayLabel, axis=0, inplace=True)
 
     KLdiv = 0
