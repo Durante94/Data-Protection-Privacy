@@ -4,21 +4,21 @@ import pandas as pd
 
 
 def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
-    # dataframe for groups
+    # Dataframe for groups
     dfResult = pd.DataFrame()
 
-    # array of ggroups for SD for each  created groups
+    # Array of groups for sensitive datas for each created group
     sdResult = []
 
-    # new histogram
+    # New histogram
     new_hist = dict()
 
     rollbackCount = 0
 
-    # new dataframe of SD only
+    # New dataframe of only sensitive datas
     SD_DF = pd.DataFrame(columns=SDvals)
 
-    # search of the first SD
+    # Search of the first sensitive data
     SDfound = False
     tmp = 0
     i = 0
@@ -26,16 +26,16 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
         for j in SDvals:
             if df.iloc[i][j]:
                 SDfound = True
-                # retrieve the index of the row of the first SD
+                # Retrieve the index of the row of the first sensitive data
                 tmp = df.iloc[[i]].index
                 break
         i += 1
 
     while remaining > p:
         print(remaining)
-        # array of SD already present in t for wich i must not have conflict
+        # Srray of sensitive datas already present in t for which I must not have conflict
         SD_conflict = []
-        # retrieve the number of the row in df for tmp
+        # Retrieve the number of the row in dataframe for tmp
         SDindex = df.index.get_loc(tmp[0])
         for i in SDvals:
             if df.iloc[SDindex][i]:
@@ -43,13 +43,13 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
 
         # Candidate List
         CL = []
-        # range
+        # Range
         range = alpha * p
-        # Group array, anonimized dataframe rows
+        # Group array, anonymized dataframe rows
         group = []
         conflict = False
 
-        # cycle for the successor of t
+        # Loop for the successors of t
         range_count = 0
         SDindex_tmp = SDindex
         while SDindex_tmp < len(df) - 1 and range_count < range:
@@ -58,20 +58,20 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
             SD_to_insert = []
             for j in SDvals:
                 conflict = False
-                # if j is not in conflict and it's sensible
+                # If j is not in conflict and it's sensitive
                 if succ_row.get(j):
                     if j not in SD_conflict:
                         SD_to_insert.append(j)
                     else:
                         conflict = True
                         break
-            # the row don't contains conflicting sensitive data, I can add it to the CL
+            # The row doesn't contain conflicting sensitive datas, I can add it to the Candidate List
             if not conflict:
                 CL.append(succ_row.name)
                 range_count += 1
                 SD_conflict.extend(SD_to_insert)  # INDIANATA STACK OVERFLOW
 
-        # cycle for the predecessors of t
+        # Loop for the predecessors of t
         range_count = 0
         SDindex_tmp = SDindex
         while SDindex_tmp > 0 and range_count < range:
@@ -80,14 +80,14 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
             SD_to_insert = []
             for j in SDvals:
                 conflict = False
-                # if j is not in conflict and it's sensible
+                # If j is not in conflict and it's sensitive
                 if pred_row.get(j):
                     if j not in SD_conflict:
                         SD_to_insert.append(j)
                     else:
                         conflict = True
                         break
-            # the row don't contains conflicting sensitive data, I can add it to the CL
+            # The row doesn't contain conflicting sensitive datas, I can add it to the Candidate List
             if not conflict:
                 CL.append(pred_row.name)
                 range_count += 1
@@ -95,21 +95,22 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
 
         # completed CL, creation of the group
         group.append(tmp[0])
-        # sort CL by decreasing values of commons Quasi-Identifiers, that is: the row wich most commons QID will be the first
+        # Sort Candidate List by decreasing values of commons Quasi-Identifiers,
+        # that is: the row which contains the most commons Quasi-Identifier will be the first
         CLtmp = list()
         for x in CL:
             QIDcount = 0
             for y in QIvals:
                 if df.loc[tmp[0]][y] == df.loc[x][y]:
                     QIDcount += 1
-            # adding to the tupla the number of row pair to the number of same QID 
+            # Adding to the tuple the number of row pair to the number of the same Quasi-Identifier
             CLtmp.append(tuple((x, QIDcount)))
 
-        # sorting of the list by decreasding values based on the nummber of common QID
+        # Sorting of the list by decreasing values based on the number of common Quasi-Identifier
         CLtmp_sorted = sorted(CLtmp, key=operator.itemgetter(1), reverse=True)
 
         count = 0
-        # new histogram
+        # New histogram
         new_hist = copy.deepcopy(hist)
         group_SD = []
         for j in SDvals:
@@ -135,17 +136,17 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
                 break
 
         if test:
-            # test successfull
+            # Test successful
             dfResult = dfResult.append(df.loc[group, :])
 
-            # searching for the next SD
+            # Searching for the next sensitive data
             SDfound = False
             i = SDindex
             while i < len(df) and not SDfound:
                 for j in SDvals:
                     if df.iloc[i][j] and df.iloc[[i]].index not in group:
                         SDfound = True
-                        # retrieve the row index of the first SD
+                        # Retrieve the row index of the first sensitive data
                         tmp = df.iloc[[i]].index
                         break
                 i += 1
@@ -154,7 +155,7 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
             hist = copy.deepcopy(new_hist)
             sdResult.append(group_SD)
 
-            # if there isn't any more SD, break because I only need to unload the remaining groups
+            # If there aren't anymore sensitive datas, break because I only need to unload the remaining groups
             if not SDfound:
                 dfResult = dfResult.append(df)
                 df = df.iloc[0:0]
@@ -206,7 +207,6 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
             print("Error: there are some SD left")
             return -1, -1
 
-        # dfResult.append(df)
         dfResult = dfResult.append(df)
         df = df.iloc[0:0]
 
