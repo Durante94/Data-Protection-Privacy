@@ -4,22 +4,21 @@ import pandas as pd
 
 
 def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
-    # dichiariamo il dataframe raggruppato
+    # dataframe for groups
     dfResult = pd.DataFrame()
 
-    # array di gruppi di SD per ognuno dei gruppi creati
+    # array of ggroups for SD for each  created groups
     sdResult = []
 
-    # nuovo istogramma creato con deepcopy
-
+    # new histogram
     new_hist = dict()
 
     rollbackCount = 0
 
-    # costruisco dataframe di soli SD
+    # new dataframe of SD only
     SD_DF = pd.DataFrame(columns=SDvals)
 
-    # cerco il primo SD
+    # search of the first SD
     SDfound = False
     tmp = 0
     i = 0
@@ -27,30 +26,30 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
         for j in SDvals:
             if df.iloc[i][j]:
                 SDfound = True
-                # recupero l'indice di riga della prima occorrenza di un SD
+                # retrieve the index of the row of the first SD
                 tmp = df.iloc[[i]].index
                 break
         i += 1
 
     while remaining > p:
-        # SD già in t con cui non devo andare in conflitto
+        print(remaining)
+        # array of SD already present in t for wich i must not have conflict
         SD_conflict = []
-        # recupero il numero  di riga dentro il df corrispondente a tmp
+        # retrieve the number of the row in df for tmp
         SDindex = df.index.get_loc(tmp[0])
         for i in SDvals:
             if df.iloc[SDindex][i]:
                 SD_conflict.append(i)
 
-        # Candidate List (riga 5 pseudocodice)
+        # Candidate List
         CL = []
-        # range (riga 5 pseudocodice)
+        # range
         range = alpha * p
-        # Array del gruppo (riga 6 pseudocodice), righe del dataframe che
-        # anonimizziamo
+        # Group array, anonimized dataframe rows
         group = []
         conflict = False
 
-        # ciclo per i successori di t
+        # cycle for the successor of t
         range_count = 0
         SDindex_tmp = SDindex
         while SDindex_tmp < len(df) - 1 and range_count < range:
@@ -59,21 +58,20 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
             SD_to_insert = []
             for j in SDvals:
                 conflict = False
-                # se non è in conflitto ed è sensibile
+                # if j is not in conflict and it's sensible
                 if succ_row.get(j):
                     if j not in SD_conflict:
                         SD_to_insert.append(j)
                     else:
                         conflict = True
                         break
-            # la riga non contiene dati sensibili in conflitto la aggiungo alla
-            # CL
+            # the row don't contains conflicting sensitive data, I can add it to the CL
             if not conflict:
                 CL.append(succ_row.name)
                 range_count += 1
                 SD_conflict.extend(SD_to_insert)  # INDIANATA STACK OVERFLOW
 
-        # ciclo per i predecessori di t
+        # cycle for the predecessors of t
         range_count = 0
         SDindex_tmp = SDindex
         while SDindex_tmp > 0 and range_count < range:
@@ -82,39 +80,36 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
             SD_to_insert = []
             for j in SDvals:
                 conflict = False
-                # se non è in conflitto ed è sensibile
+                # if j is not in conflict and it's sensible
                 if pred_row.get(j):
                     if j not in SD_conflict:
                         SD_to_insert.append(j)
                     else:
                         conflict = True
                         break
-            # la riga non contiene dati sensibili in conflitto la aggiungo alla CL
+            # the row don't contains conflicting sensitive data, I can add it to the CL
             if not conflict:
                 CL.append(pred_row.name)
                 range_count += 1
                 SD_conflict.extend(SD_to_insert)  # INDIANATA STACK OVERFLOW
 
-        # CL completata, creazione del gruppo
+        # completed CL, creation of the group
         group.append(tmp[0])
-        # riordine della CL in ordine decrescente per QID in comune
-        # ovvero: le righe con più QID in comune sono all'inizio
+        # sort CL by decreasing values of commons Quasi-Identifiers, that is: the row wich most commons QID will be the first
         CLtmp = list()
         for x in CL:
             QIDcount = 0
             for y in QIvals:
                 if df.loc[tmp[0]][y] == df.loc[x][y]:
                     QIDcount += 1
-            # aggiungo alla tupla il numero di riga accoppiata al numero  di QI uguali trovati
+            # adding to the tupla the number of row pair to the number of same QID 
             CLtmp.append(tuple((x, QIDcount)))
 
-        # sort della lista in ordine decrescente per numero di QID
+        # sorting of the list by decreasding values based on the nummber of common QID
         CLtmp_sorted = sorted(CLtmp, key=operator.itemgetter(1), reverse=True)
 
-        # Punto 7 pseudocodice
-
         count = 0
-        # nuovo istogramma
+        # new histogram
         new_hist = copy.deepcopy(hist)
         group_SD = []
         for j in SDvals:
@@ -140,30 +135,27 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
                 break
 
         if test:
-            # test passato
-            # dfResult.append(df.loc[group, :])
+            # test successfull
             dfResult = dfResult.append(df.loc[group, :])
 
-            # cerco il prossimo SD
+            # searching for the next SD
             SDfound = False
             i = SDindex_tmp
             while i < len(df) and not SDfound:
                 for j in SDvals:
                     if df.iloc[i][j] and df.iloc[[i]].index not in group:
                         SDfound = True
-                        # recupero l'indice di riga della prima occorrenza di un SD
+                        # retrieve the row index of the first SD
                         tmp = df.iloc[[i]].index
                         break
                 i += 1
 
-            # df.drop(group)
             df = df.drop(group)
             hist = copy.deepcopy(new_hist)
             sdResult.append(group_SD)
 
-            # se non ce ne sono più sensibili esco perchè devo solo scaricare in gruppi i rimanenti
+            # if there isn't any more SD, break because I only need to unload the remaining groups
             if not SDfound:
-                # dfResult.append(df)
                 dfResult = dfResult.append(df)
                 df = df.iloc[0:0]
                 break
