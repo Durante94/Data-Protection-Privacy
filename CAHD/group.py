@@ -146,7 +146,7 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
 
             # cerco il prossimo SD
             SDfound = False
-            i = SDindex_tmp
+            i = SDindex
             while i < len(df) and not SDfound:
                 for j in SDvals:
                     if df.iloc[i][j] and df.iloc[[i]].index not in group:
@@ -156,7 +156,6 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
                         break
                 i += 1
 
-            # df.drop(group)
             df = df.drop(group)
             hist = copy.deepcopy(new_hist)
             sdResult.append(group_SD)
@@ -169,7 +168,7 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
                 break
         else:
             rollbackCount += 1
-            i = SDindex_tmp
+            i = SDindex
             SDfound = False
             while i < len(df) - 1 and not SDfound:
                 i += 1
@@ -181,7 +180,7 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
 
             if not SDfound:
                 i = -1
-                while i < SDindex_tmp and not SDfound:
+                while i < SDindex and not SDfound:
                     i += 1
                     for _ in SDvals:
                         if df.iloc[i][_]:
@@ -189,11 +188,11 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
                             tmp = df.iloc[[i]].index
                             break
 
-    print("Dimensione df", len(df))
+    print("Dimension of df", len(df))
 
     if not df.empty:
 
-        # abbiamo ancora delle righe nel df, ne abbiamo raccolte meno di p
+        # We still have some rows in the dataframe, we have collected less than p
         k = 0
         group_SD = []
         while k < len(df):
@@ -209,9 +208,9 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
                 Ok = False
 
         if Ok:
-            print("Risultato algoritmo corretto")
+            print("Algorithm result correct")
         else:
-            print("Errore: sono rimasti degli SD")
+            print("Error: there are some SD left")
             return -1, -1
 
         # dfResult.append(df)
@@ -219,12 +218,13 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
         df = df.iloc[0:0]
 
         if group_SD:
-            print("Abbiamo ancora SD: ", group_SD)
+            print("We have still some SD: ", group_SD)
             sdResult.append(group_SD)
         else:
-            print("Non abbiamo più SD: ", group_SD)
+            print("We don't have SD anymore: ", group_SD)
 
-    # ora che abbiamo il Dataframe finale organizzato per gruppi, elimino le colonne degli SD
+    # Now that we have the final dataframe, organized by groups,
+    # we delete the columns from the sensitive datas
     for j in SDvals:
         dfResult.drop(j, axis=1, inplace=True)
 
@@ -238,7 +238,7 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
             SD_DF.loc[nameGroup][y] = True
     remainingGroups = groupNumber - len(sdResult)
     while remainingGroups > 0:
-        # Rimangono i gruppi senza transazioni sensibili
+        # Now remain only the groups without sensitive transactions
         remainingGroups -= 1
         countGroup += 1
         nameGroup = "Group" + str(countGroup)

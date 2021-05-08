@@ -1,5 +1,3 @@
-import pandas as pd
-import numpy as np
 from group import make_group
 
 
@@ -13,7 +11,7 @@ class CAHD:
         self.QIvals = QIvals
         self.hist = dict()
 
-    # INIZIALIZZO L'ISTOGRAMMA PER OGNI SD
+    # Initialize the histogram for every sensitive data
     def compute_histogram(self):
         self.hist = dict(self.df[self.SDvals].sum())
         countSDinDf = 0
@@ -41,7 +39,7 @@ class CAHD:
         print("Privacy degree satisfiable: ", self.p)
         remaining = len(self.df.index)
         
-        # CREAZIONE DEI GRUPPI
+        # Creation of the groups
         dfResult, dfSD = make_group(self.df, self.SDvals, self.QIvals, self.p, self.alpha, self.hist, self.df.shape[0], remaining)
         return dfResult, dfSD, count
 

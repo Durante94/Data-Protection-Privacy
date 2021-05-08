@@ -7,7 +7,7 @@ from sklearn.utils import shuffle
 
 
 class DataFrame:
-    # constructor
+    # Constructor
     def __init__(self, namefile, size, sd, qi):
         self.nameFile = namefile
         self.size = size
@@ -19,7 +19,7 @@ class DataFrame:
 
     def df_creation(self):
 
-        # READING FILE
+        # Reading file
         path = os.path.join(os.getcwd(), "BMS1_spmf.txt")
         matrix = []
         with open(path) as fp:
@@ -27,49 +27,49 @@ class DataFrame:
                 trans = [int(s) for s in line.split() if (s != '-1' and s != '-2')]
                 matrix.append(trans)
 
-        # CODIFICA DEL DATASET DI TRANSAZIONI IN UN ARRAY NUMPY E CREAZIONE DEL DATAFRAME
+        # Creation of the dataset of transactions in a Numpy array and creation of the dataframe
         te = TransactionEncoder()
         te_ary = te.fit(matrix).transform(matrix)
         df = pd.DataFrame(te_ary, columns=te.columns_)
 
-        # SE LA DIMENSIONE E' > DEL DATASET ALLORA SELEZIONO QI, SD E SUCCESSIVAMENTE AGGIUNGO FAKE ITEMS
+        # If the dimension is greater than the dimension of the dataset,
+        # then select quasi-identifiers, sensitive datas and add fake items
         if self.size >= 497:
-            # ESTRAZIONE DI QI E SD RANDOM
+            # Extraction of quasi-identifier and sensitive data random
             dfCols = df.sample(self.qi + self.sd, axis=1).columns.values
-            # print(dfCols)
 
-            # prendiamo le self.qi colonne e le salviamo in self
+            # Take the self.qi columns and save them in self
             self.QIcols = dfCols[:self.qi]
 
-            # prendiamo le altre self.s colonne e le salviamo in self
+            # Take the others self.s columns and save them in self
             self.SDcols = dfCols[self.qi:]
 
-            # AGGIUNTA DEI FAKE ITEMS
+            # Add the fake items
             add_cols = self.size - 497
             for i in range(0, add_cols):
                 df['fake_item_' + str(i)] = False
 
-        # SELEZIONO UN SOTTOINSIEME QUADRATO (dimensioni size*size) DEL DATAFRAME -> TAGLIO DEL DF
+        # Select a square subset ( dimension size*size) of the dataframe, then cut the dataframe
         df = df.iloc[0:self.size, 0:self.size]
         df = shuffle(df)
 
-        # SE LA DIMENSIONE E' MINORE DI 497 SELEZIONO QI ED SD SUL DF TAGLIATO
+        # If the dimension is less than 497, select quasi-identifiers and sensitive datas on the
+        # dataframe cut
         if self.size <= 497:
-            # ESTRAZIONE DI QI E SD RANDOM
+            # Extraction of quasi-identifiers and sensitive datas random
             dfCols = df.sample(self.qi + self.sd, axis=1).columns.values
-            # print(dfCols)
 
-            # prendiamo le self.qi colonne e le salviamo in self
+            # Take the self.qi columns and save them in self
             self.QIcols = dfCols[:self.qi]
 
-            # prendiamo le altre self.s colonne e le salviamo in self
+            # Take the other self.s comlumns and save them in self
             self.SDcols = dfCols[self.qi:]
 
-        # CALCOLO IL VETTORE DELLE PERMUTAZIONI
+        # Compute the vector of permutations
         graph = csc_matrix(df.values)
         aux = reverse_cuthill_mckee(graph, False)
 
-        # GENERO LA BAND MATRIX
+        # Generate the band matrix
         rows = list(df.index.values)  # recupero i valori degli indici (righe)
         rows2 = []
         for i in aux:

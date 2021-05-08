@@ -1,7 +1,10 @@
+import warnings
 from KLdivergence import KLdivergence
 from DataFrame import DataFrame
 from CAHD import CAHD
 from Plot import plot
+
+warnings.filterwarnings("ignore")
 
 if __name__ == "__main__":
     # print("numero di item:")
@@ -22,29 +25,29 @@ if __name__ == "__main__":
 
     nameFile = "BMS1_spmf.txt"
 
-    # CREAZIONE DEL DATAFRAME
+    # Dataframe creation
     create_df = DataFrame(nameFile, size, sd, qi)
     df, SDcols, QIcols = create_df.df_creation()
 
-    # STAMPA DEL NUMERO DI TRANSAZIONI E ITEM TOTALI CONTENUTI NELLA BAND MATRIX
+    # Print of number of transactions and total items contained in the band matrix
     shape = df.shape
-    print("numero di transazioni:", shape[0])  # Righe
-    print("numero di items:", shape[1])  # Colonne
+    print("Number of transactions:", shape[0])  # Righe
+    print("Number of items:", shape[1])  # Colonne
 
-    # PLOT DELLA BAND MATRIX
-    plot(df, "BAND MATRIX")
+    # Plot of the band matrix
+    plot(df, "Band matrix")
 
-    # PRINT DEGLI SD E QI
-    print("numero di sensitive data:", sd)
-    print("sensitive data:", SDcols)
-    print("numero di Quasi Identifier:", qi)
-    print("quasi identifier:", QIcols)
+    # Print of sensitive datas and quasi-identifiers
+    print("Number of sensitive datas:", sd)
+    print("Sensitive data:", SDcols)
+    print("Number of Quasi Identifiers:", qi)
+    print("Quasi identifier:", QIcols)
 
-    # AVVIO DEL CAHD
+    # Start of CAHD algorithm
     cahd = CAHD(df, p, alpha, SDcols, QIcols)
     dfResult, dfSD, count = cahd.startAlgorithm()
 
-    # Calcolo la KL divergence
+    # Compute the KL divergence
 
     KL = KLdivergence(QIcols, SDcols, df, qi, sd, p, count, dfResult, dfSD)
 
