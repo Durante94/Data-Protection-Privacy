@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 
+
 def plot(df, title):
     shape = df.shape
     plt.title(title)

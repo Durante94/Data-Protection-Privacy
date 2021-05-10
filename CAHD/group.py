@@ -32,8 +32,8 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
         i += 1
 
     while remaining > p:
-        #print("remaining:",remaining)
-        # Srray of sensitive datas already present in t for which I must not have conflict
+        # print("remaining:",remaining)
+        # Array of sensitive datas already present in t for which I must not have conflict
         SD_conflict = []
         # Retrieve the number of the row in dataframe for tmp
         SDindex = df.index.get_loc(tmp[0])
@@ -69,7 +69,7 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
             if not conflict:
                 CL.append(succ_row.name)
                 range_count += 1
-                SD_conflict.extend(SD_to_insert)  # INDIANATA STACK OVERFLOW
+                SD_conflict.extend(SD_to_insert)
 
         # Loop for the predecessors of t
         range_count = 0
@@ -91,9 +91,9 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
             if not conflict:
                 CL.append(pred_row.name)
                 range_count += 1
-                SD_conflict.extend(SD_to_insert)  # INDIANATA STACK OVERFLOW
+                SD_conflict.extend(SD_to_insert)
 
-        # completed CL, creation of the group
+        # Completed CL, creation of the group
         group.append(tmp[0])
         # Sort Candidate List by decreasing values of commons Quasi-Identifiers,
         # that is: the row which contains the most commons Quasi-Identifier will be the first
@@ -182,7 +182,7 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
                             tmp = df.iloc[[i]].index
                             break
 
-    #print("Dimension of df", len(df))
+    # print("Dimension of df", len(df))
 
     if not df.empty:
 

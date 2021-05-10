@@ -4,21 +4,22 @@ import math
 
 
 def KLdivergence(QIvals, SDvals, df, qi, sd, p, count_SD, dfResult, SD_DF):
-    # Setup array containing the labels for QI e SD, in order to eliminate the other columns
+    # Setup array containing the labels for quasi-identifiers and sensitive datas,
+    # in order to eliminate the other columns
     arraySDQI = np.append(QIvals, SDvals)
     for column in df:
         if column not in arraySDQI:
             df.drop(column, axis=1, inplace=True)
     df = df[arraySDQI]
 
-    # COmbinations between cells
+    # Combinations between cells
     iterList = list(itertools.product([False, True], repeat=qi))
 
-    # Array initilization wich will conatain the values for Act and Est
+    # Array initilization which will contain the values for Act and Est
     Act = []
     Est = []
 
-    # Combinations cycle
+    # Loop combinations
     for _ in iterList:
         cellCount = 0
         count = 0
@@ -35,7 +36,7 @@ def KLdivergence(QIvals, SDvals, df, qi, sd, p, count_SD, dfResult, SD_DF):
             stop = True
             for k in _:
 
-                # from 0 to qi-1 we have the QI
+                # from 0 to qi-1 we have the quasi-identifiers
                 if i == qi:
                     break
                 if df.iloc[count, i] != k:
@@ -43,14 +44,14 @@ def KLdivergence(QIvals, SDvals, df, qi, sd, p, count_SD, dfResult, SD_DF):
                     break
                 i += 1
             if stop:
-                # from qi to qi+sd-1 we have the SD
+                # from qi to qi+sd-1 we have the sensitive datas
                 while i < qi + sd:
                     if df.iloc[count, i]:
                         cellCount += 1
                     i += 1
                 label = df.index[count]
                 index = dfResult.index.get_loc(label)
-                # Index / p retrieve in wich group belongs the transaction
+                # Index / p retrieve in which group belongs the transaction
                 group = "Group" + str(math.floor(index / p))
 
                 if group not in groupCell:
@@ -60,7 +61,7 @@ def KLdivergence(QIvals, SDvals, df, qi, sd, p, count_SD, dfResult, SD_DF):
                     # each value of the histogram will be for the label in that group
                     groupDict[group] += 1
                 else:
-                    # add in the group if not belongs to any
+                    # add in the group if doesn't belong to any
                     groupDict[group] = 1
                 arrayLabel.append(df.index[count])
             count += 1
@@ -75,13 +76,13 @@ def KLdivergence(QIvals, SDvals, df, qi, sd, p, count_SD, dfResult, SD_DF):
                     a += 1
             EstG += (a * b) / p
 
-        # compute Est by sum (a*b)/p computed from each groups
+        # compute Est by sum (a*b)/p computed from each group
 
         EstC = EstG / count_SD
         Est.append(EstC)
         Act.append(cellCount / count_SD)
 
-        # Remove the cells belonging the transactions from df
+        # Remove the cells belonging the transactions from dataframe
         df.drop(arrayLabel, axis=0, inplace=True)
 
     KLdiv = 0
