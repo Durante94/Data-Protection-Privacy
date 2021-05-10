@@ -32,7 +32,7 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
         i += 1
 
     while remaining > p:
-        print(remaining)
+        #print("remaining:",remaining)
         # Srray of sensitive datas already present in t for which I must not have conflict
         SD_conflict = []
         # Retrieve the number of the row in dataframe for tmp
@@ -182,7 +182,7 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
                             tmp = df.iloc[[i]].index
                             break
 
-    print("Dimension of df", len(df))
+    #print("Dimension of df", len(df))
 
     if not df.empty:
 
