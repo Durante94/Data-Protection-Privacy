@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from Plot import plot
 from scipy.sparse.csgraph import reverse_cuthill_mckee
 from scipy.sparse import csc_matrix
 from mlxtend.preprocessing import TransactionEncoder
@@ -8,7 +9,7 @@ from sklearn.utils import shuffle
 
 class DataFrame:
     # Constructor
-    def __init__(self, namefile, size, sd, qi):
+    def __init__(self, namefile, size, sd, qi, maxsize):
         self.nameFile = namefile
         self.size = size
         self.sd = sd
@@ -16,11 +17,12 @@ class DataFrame:
         self.SDcols = None
         self.QIcols = None
         self.df = None
+        self.maxSize = maxsize
 
     def df_creation(self):
 
         # Reading file
-        path = os.path.join(os.getcwd(), "BMS1_spmf.txt")
+        path = os.path.join(os.getcwd(), self.nameFile)
         matrix = []
         with open(path) as fp:
             for line in fp:
@@ -34,7 +36,7 @@ class DataFrame:
 
         # If the dimension is greater than the dimension of the dataset,
         # then select quasi-identifiers, sensitive datas and add fake items
-        if self.size >= 497:
+        if self.size >= self.maxSize:
             # Extraction of quasi-identifier and sensitive data random
             dfCols = df.sample(self.qi + self.sd, axis=1).columns.values
 
@@ -45,7 +47,7 @@ class DataFrame:
             self.SDcols = dfCols[self.qi:]
 
             # Add the fake items
-            add_cols = self.size - 497
+            add_cols = self.size - self.maxSize
             for i in range(0, add_cols):
                 df['fake_item_' + str(i)] = False
 
@@ -53,9 +55,12 @@ class DataFrame:
         df = df.iloc[0:self.size, 0:self.size]
         df = shuffle(df)
 
-        # If the dimension is less than 497, select quasi-identifiers and sensitive datas on the
+        # Plot of the initial dataset
+        plot(df, "Initial Dataset")
+
+        # If the dimension is less than self.maxSize, select quasi-identifiers and sensitive datas on the
         # dataframe cut
-        if self.size <= 497:
+        if self.size <= self.maxSize:
             # Extraction of quasi-identifiers and sensitive datas random
             dfCols = df.sample(self.qi + self.sd, axis=1).columns.values
 

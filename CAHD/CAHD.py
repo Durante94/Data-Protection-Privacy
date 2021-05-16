@@ -41,5 +41,5 @@ class CAHD:
         
         # Creation of the groups
         dfResult, dfSD = make_group(self.df, self.SDvals, self.QIvals, self.p, self.alpha, self.hist, self.df.shape[0], remaining)
-        return dfResult, dfSD, count
+        return dfResult, dfSD, count, self.p
 
