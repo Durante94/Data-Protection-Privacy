@@ -10,10 +10,10 @@ warnings.filterwarnings("ignore")
 if __name__ == "__main__":
     # print("numero di item:")
     # size = input()
-    size = 500
+    size = 1000
     # print("Grado di Privacy:")
     # p = input()
-    p = 10
+    p = [4, 6, 8, 10, 14]
     # print("numero di item sensibili:")
     # sd = input()
     sd = 10
@@ -36,37 +36,40 @@ if __name__ == "__main__":
         maxSize = 3340
         nameFile = "dataset/BMS2.txt"
 
-    # Timer start
-    start_time = time.time()
-
+    dfTimeStart = time.time()
     # Dataframe creation
     create_df = DataFrame(nameFile, size, sd, qi, maxSize)
     df, SDcols, QIcols = create_df.df_creation()
 
-    # Print of number of transactions and total items contained in the band matrix
-    # shape = df.shape
-    # print("Number of transactions:", shape[0])
-    # print("Number of items:", shape[1])
-
     # Plot of the band matrix
     plot(df, "Band matrix")
+    dfCreationTime = time.time() - dfTimeStart
 
-    # Print of sensitive datas and quasi-identifiers
-    print("Number of sensitive datas:", sd)
-    print("Sensitive data:", SDcols)
-    print("Number of Quasi Identifiers:", qi)
-    print("Quasi identifier:", QIcols)
+    exec_time = []
+    kl_divergence = []
+    for i in range(0, len(p)):
 
-    # Start of CAHD algorithm
-    cahd = CAHD(df, p, alpha, SDcols, QIcols)
-    dfResult, dfSD, count, p = cahd.startAlgorithm()
+        # Timer start
+        start_time = time.time()
 
-    # Compute the KL divergence
+        # Start of CAHD algorithm
+        cahd = CAHD(df, p[i], alpha, SDcols, QIcols)
+        dfResult, dfSD, count, p[i] = cahd.startAlgorithm()
 
-    KL = KLdivergence(QIcols, SDcols, df, qi, sd, p, count, dfResult, dfSD)
+        # Compute the KL divergence
+        KL = KLdivergence(QIcols, SDcols, df, qi, sd, p[i], count, dfResult, dfSD)
 
-    # Timer end
-    end_time = time.time() - start_time
+        # Timer end
+        end_time = time.time() - start_time
 
-    print("the execution time for the privacy degree %s is %s seconds" % (p, round(end_time, 2)))
-    print("KL Divergence:", KL)
+        print("the execution time for the privacy degree %s is %s seconds" % (p[i], round(end_time, 2)))
+        print("KL Divergence:", KL)
+        print("---------END OF EXECUTION %s---------" % (i+1))
+        exec_time.append(round(end_time, 2))
+        kl_divergence.append(KL)
+
+    print(p)
+    print(exec_time)
+    print(kl_divergence)
+    print(round(dfCreationTime, 2))
+

@@ -1,0 +1,1 @@
+# Classe per stampare il tempo di esecuzione
