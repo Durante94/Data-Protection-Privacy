@@ -49,7 +49,7 @@ if __name__ == "__main__":
     kl_divergence = []
     for i in range(0, len(p)):
         df = original_df.copy()
-        #dimension of the dataset
+        # dimension of the dataset
         # shape = df.shape
         # print("Number of transactions:", shape[0])
         # print("Number of items:", shape[1])
