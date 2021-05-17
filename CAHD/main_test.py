@@ -39,15 +39,20 @@ if __name__ == "__main__":
     dfTimeStart = time.time()
     # Dataframe creation
     create_df = DataFrame(nameFile, size, sd, qi, maxSize)
-    df, SDcols, QIcols = create_df.df_creation()
+    original_df, SDcols, QIcols = create_df.df_creation()
 
     # Plot of the band matrix
-    plot(df, "Band matrix")
+    plot(original_df, "Band matrix")
     dfCreationTime = time.time() - dfTimeStart
 
     exec_time = []
     kl_divergence = []
     for i in range(0, len(p)):
+        df = original_df.copy()
+        #dimension of the dataset
+        # shape = df.shape
+        # print("Number of transactions:", shape[0])
+        # print("Number of items:", shape[1])
 
         # Timer start
         start_time = time.time()
