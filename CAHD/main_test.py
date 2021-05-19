@@ -3,6 +3,7 @@ from KLdivergence import KLdivergence
 from DataFrame import DataFrame
 from CAHD import CAHD
 from Plot import plot
+from PlotBench import plotBench
 import time
 
 warnings.filterwarnings("ignore")
@@ -73,8 +74,9 @@ if __name__ == "__main__":
         exec_time.append(round(end_time, 2))
         kl_divergence.append(KL)
 
-    print(p)
-    print(exec_time)
-    print(kl_divergence)
-    print(round(dfCreationTime, 2))
+    print("privacy degrees:", p)
+    print("execution times:", exec_time)
+    print("kl-divergence:", kl_divergence)
+    print("dataframe creation time:", round(dfCreationTime, 2))
+    plotBench(exec_time,kl_divergence, p)
 
