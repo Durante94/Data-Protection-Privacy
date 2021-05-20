@@ -19,8 +19,28 @@ class DataFrame:
         self.df = None
         self.maxSize = maxsize
 
-    def df_creation(self):
+    def singleSdQi(self):
+        # Extraction of quasi-identifier and sensitive data random
+        dfCols = self.df.sample(self.qi + self.sd, axis=1).columns.values
 
+        # Take the self.qi columns and save them in self
+        self.QIcols = dfCols[:self.qi]
+
+        # Take the others self.s columns and save them in self
+        self.SDcols = dfCols[self.qi:]
+
+    def multipleSdQi(self):
+        QIvalues = []
+        SDvalues = []
+        for _ in range(0,len(self.sd)):
+            dfCols = self.df.sample(self.qi + self.sd[_], axis=1).columns.values
+            QIcols = dfCols[:self.qi]
+            SDcols = dfCols[self.qi:]
+            QIvalues.append(QIcols)
+            SDvalues.append(SDcols)
+        return SDvalues, QIvalues
+
+    def df_creation(self):
         # Reading file
         path = os.path.join(os.getcwd(), self.nameFile)
         matrix = []
@@ -32,58 +52,49 @@ class DataFrame:
         # Creation of the dataset of transactions in a Numpy array and creation of the dataframe
         te = TransactionEncoder()
         te_ary = te.fit(matrix).transform(matrix)
-        df = pd.DataFrame(te_ary, columns=te.columns_)
+        self.df = pd.DataFrame(te_ary, columns=te.columns_)
 
         # If the dimension is greater than the dimension of the dataset,
         # then select quasi-identifiers, sensitive datas and add fake items
         if self.size >= self.maxSize:
-            # Extraction of quasi-identifier and sensitive data random
-            dfCols = df.sample(self.qi + self.sd, axis=1).columns.values
-
-            # Take the self.qi columns and save them in self
-            self.QIcols = dfCols[:self.qi]
-
-            # Take the others self.s columns and save them in self
-            self.SDcols = dfCols[self.qi:]
+            if not isinstance(self.sd, list):
+                self.singleSdQi()
+            else:
+                self.SDcols, self.QIcols = self.multipleSdQi()
 
             # Add the fake items
             add_cols = self.size - self.maxSize
             for i in range(0, add_cols):
-                df['fake_item_' + str(i)] = False
+                self.df['fake_item_' + str(i)] = False
 
         # Select a square subset ( dimension size*size) of the dataframe, then cut the dataframe
-        df = df.iloc[0:self.size, 0:self.size]
-        df = shuffle(df)
+        self.df = self.df.iloc[0:self.size, 0:self.size]
+        self.df = shuffle(self.df)
 
         # Plot of the initial dataset
-        plot(df, "Initial Dataset")
+        plot(self.df, "Initial Dataset")
 
         # If the dimension is less than self.maxSize, select quasi-identifiers and sensitive datas on the
         # dataframe cut
         if self.size <= self.maxSize:
-            # Extraction of quasi-identifiers and sensitive datas random
-            dfCols = df.sample(self.qi + self.sd, axis=1).columns.values
-
-            # Take the self.qi columns and save them in self
-            self.QIcols = dfCols[:self.qi]
-
-            # Take the other self.s comlumns and save them in self
-            self.SDcols = dfCols[self.qi:]
-
+            if not isinstance(self.sd, list):
+                self.singleSdQi()
+            else:
+                self.SDcols, self.QIcols = self.multipleSdQi()
         # Compute the vector of permutations
-        graph = csc_matrix(df.values)
+        graph = csc_matrix(self.df.values)
         aux = reverse_cuthill_mckee(graph, False)
 
         # Generate the band matrix
-        rows = list(df.index.values)  # recupero i valori degli indici (righe)
+        rows = list(self.df.index.values)  # recupero i valori degli indici (righe)
         rows2 = []
         for i in aux:
             rows2.append(rows[i])  # li riordino secondo gli indici salvati in aux
-        df = df.reindex(rows2)  # carico il nuovo indice
-        cols = list(df.columns.values)  # recupero i valori delle colonne
+        self.df = self.df.reindex(rows2)  # carico il nuovo indice
+        cols = list(self.df.columns.values)  # recupero i valori delle colonne
         cols2 = []
         for i in aux:
             cols2.append(cols[i])
-        df = df[cols2]
+        self.df = self.df[cols2]
 
-        return df, self.SDcols, self.QIcols
+        return self.df, self.SDcols, self.QIcols

@@ -9,20 +9,15 @@ import time
 warnings.filterwarnings("ignore")
 
 if __name__ == "__main__":
-    # print("numero di item:")
-    # size = input()
+    # numero di item
     size = 1000
-    # print("Grado di Privacy:")
-    # p = input()
+    # Grado di Privacy
     p = [4, 6, 8, 10, 14]
-    # print("numero di item sensibili:")
-    # sd = input()
-    sd = 10
-    # print("numero di Quasi-Identifier:")
-    # qi = input()
+    # numero di item sensibili
+    sd = [10, 20]
+    # numero di Quasi-Identifier
     qi = 4
-    # print("valore di alpha desiderato (ottimale = 3):")
-    # alpha = input()
+    # valore di alpha desiderato (ottimale = 3)
     alpha = 3
 
     nameFile = None
@@ -46,37 +41,48 @@ if __name__ == "__main__":
     plot(original_df, "Band matrix")
     dfCreationTime = time.time() - dfTimeStart
 
-    exec_time = []
-    kl_divergence = []
-    for i in range(0, len(p)):
-        df = original_df.copy()
-        # dimension of the dataset
-        # shape = df.shape
-        # print("Number of transactions:", shape[0])
-        # print("Number of items:", shape[1])
+    # debug: print of SDcols and QIcols
+    # print("SDcols:",SDcols)
+    # print("QIcols:",QIcols)
 
-        # Timer start
-        start_time = time.time()
+    total_exec_time = []
+    total_kl_divergence = []
+    total_p_satisfied = []
+    for _ in range(0, len(sd)):
+        print("SDcols:", SDcols[_])
+        print("QIcols:", QIcols[_])
+        print("--------------STARTING WITH %s SENSITIVE DATAS--------------" % sd[_])
+        exec_time = []
+        kl_divergence = []
+        p_satisfied = p
+        for i in range(0, len(p)):
+            df = original_df.copy()
 
-        # Start of CAHD algorithm
-        cahd = CAHD(df, p[i], alpha, SDcols, QIcols)
-        dfResult, dfSD, count, p[i] = cahd.startAlgorithm()
+            # Timer start
+            start_time = time.time()
 
-        # Compute the KL divergence
-        KL = KLdivergence(QIcols, SDcols, df, qi, sd, p[i], count, dfResult, dfSD)
+            # Start of CAHD algorithm
+            cahd = CAHD(df, p_satisfied[i], alpha, SDcols[_], QIcols[_])
+            dfResult, dfSD, count, p_satisfied[i] = cahd.startAlgorithm()
 
-        # Timer end
-        end_time = time.time() - start_time
+            # Compute the KL divergence
+            KL = KLdivergence(QIcols[_], SDcols[_], df, qi, sd[_], p_satisfied[i], count, dfResult, dfSD)
 
-        print("the execution time for the privacy degree %s is %s seconds" % (p[i], round(end_time, 2)))
-        print("KL Divergence:", KL)
-        print("---------END OF EXECUTION %s---------" % (i+1))
-        exec_time.append(round(end_time, 2))
-        kl_divergence.append(KL)
+            # Timer end
+            end_time = time.time() - start_time
 
-    print("privacy degrees:", p)
-    print("execution times:", exec_time)
-    print("kl-divergence:", kl_divergence)
+            print("the execution time for the privacy degree %s is %s seconds" % (p[i], round(end_time, 2)))
+            print("KL Divergence:", KL)
+            print("---------END OF EXECUTION %s---------" % (i+1))
+            exec_time.append(round(end_time, 2))
+            kl_divergence.append(KL)
+        total_exec_time.append(exec_time)
+        total_kl_divergence.append(kl_divergence)
+        total_p_satisfied.append(p_satisfied)
+
+    print("privacy degrees satisfied:", total_p_satisfied)
+    print("execution times:", total_exec_time)
+    print("kl-divergence:", total_kl_divergence)
     print("dataframe creation time:", round(dfCreationTime, 2))
-    plotBench(exec_time,kl_divergence, p)
+    plotBench(total_exec_time, total_kl_divergence, total_p_satisfied, sd)
 
