@@ -35,7 +35,6 @@ def KLdivergence(QIvals, SDvals, df, qi, sd, p, count_SD, dfResult, SD_DF):
             i = 0
             stop = True
             for k in _:
-
                 # from 0 to qi-1 we have the quasi-identifiers
                 if i == qi:
                     break
@@ -65,7 +64,6 @@ def KLdivergence(QIvals, SDvals, df, qi, sd, p, count_SD, dfResult, SD_DF):
                     groupDict[group] = 1
                 arrayLabel.append(df.index[count])
             count += 1
-        EstC = 0
         EstG = 0
 
         for x in groupCell:

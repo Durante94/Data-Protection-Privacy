@@ -10,13 +10,13 @@ warnings.filterwarnings("ignore")
 
 if __name__ == "__main__":
     # numero di item
-    size = 1000
+    size = 500
     # Grado di Privacy
-    p = [4, 6, 8, 10, 14]
+    p = [4, 6, 8, 10, 12, 14, 16, 18, 20]
     # numero di item sensibili
     sd = [10, 20]
     # numero di Quasi-Identifier
-    qi = 4
+    qi = 5
     # valore di alpha desiderato (ottimale = 3)
     alpha = 3
 
@@ -49,9 +49,9 @@ if __name__ == "__main__":
     total_kl_divergence = []
     total_p_satisfied = []
     for _ in range(0, len(sd)):
-        print("SDcols:", SDcols[_])
-        print("QIcols:", QIcols[_])
-        print("--------------STARTING WITH %s SENSITIVE DATAS--------------" % sd[_])
+        # print("SDcols:", SDcols[_])
+        # print("QIcols:", QIcols[_])
+        print("--------------STARTING WITH %s SENSITIVE DATA--------------" % sd[_])
         exec_time = []
         kl_divergence = []
         p_satisfied = p
@@ -71,7 +71,7 @@ if __name__ == "__main__":
             # Timer end
             end_time = time.time() - start_time
 
-            print("the execution time for the privacy degree %s is %s seconds" % (p[i], round(end_time, 2)))
+            print("the execution time for the privacy degree %s is %s seconds" % (p_satisfied[i], round(end_time, 2)))
             print("KL Divergence:", KL)
             print("---------END OF EXECUTION %s---------" % (i+1))
             exec_time.append(round(end_time, 2))
@@ -80,9 +80,9 @@ if __name__ == "__main__":
         total_kl_divergence.append(kl_divergence)
         total_p_satisfied.append(p_satisfied)
 
-    print("privacy degrees satisfied:", total_p_satisfied)
-    print("execution times:", total_exec_time)
-    print("kl-divergence:", total_kl_divergence)
-    print("dataframe creation time:", round(dfCreationTime, 2))
+    # print("privacy degrees satisfied:", total_p_satisfied)
+    # print("execution times:", total_exec_time)
+    # print("kl-divergence:", total_kl_divergence)
+    # print("dataframe creation time:", round(dfCreationTime, 2))
     plotBench(total_exec_time, total_kl_divergence, total_p_satisfied, sd)
 
