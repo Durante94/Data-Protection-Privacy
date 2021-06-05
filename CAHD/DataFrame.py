@@ -79,7 +79,7 @@ class DataFrame:
         # Plot of the initial dataset
         plot(self.df, "Initial Dataset")
 
-        """
+
         # If the dimension is less than self.maxSize, select quasi-identifiers and sensitive datas on the
         # dataframe cut
         if self.size <= self.maxSize:
@@ -87,7 +87,7 @@ class DataFrame:
                 self.singleSdQi()
             else:
                 self.SDcols, self.QIcols = self.multipleSdQi()
-        """
+
 
         # Compute the vector of permutations
         graph = csc_matrix(self.df.values)

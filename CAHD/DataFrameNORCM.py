@@ -84,7 +84,6 @@ class DataFrameNORCM:
             else:
                 self.SDcols, self.QIcols = self.multipleSdQi()
 
-        print(self.df.shape)
         return self.df, self.SDcols, self.QIcols
 
     # Algorithm for compute the reverse_cuthill_mckee on the df
