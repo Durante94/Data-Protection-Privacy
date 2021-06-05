@@ -93,8 +93,7 @@ if __name__ == "__main__":
 
     dfTimeStart = time.time()
     # Dataframe creation
-    create_df = DataFrame(nameFile, size, sd, qi, maxSize)
-    original_df, SDcols, QIcols = create_df.df_creation()
+    original_df = create_df.doRCM()
 
     # Plot of the band matrix
     plot(original_df, "Band matrix RCM")

@@ -32,8 +32,9 @@ class DataFrameNORCM:
     def multipleSdQi(self):
         QIvalues = []
         SDvalues = []
-        for _ in range(0,len(self.sd)):
-            dfCols = self.df.sample(self.qi + self.sd[_], axis=1).columns.values
+        for _ in range(0, len(self.sd)):
+            dfCols = self.df.sample(
+                self.qi + self.sd[_], axis=1).columns.values
             QIcols = dfCols[:self.qi]
             SDcols = dfCols[self.qi:]
             QIvalues.append(QIcols)
@@ -46,7 +47,8 @@ class DataFrameNORCM:
         matrix = []
         with open(path) as fp:
             for line in fp:
-                trans = [int(s) for s in line.split() if (s != '-1' and s != '-2')]
+                trans = [int(s)
+                         for s in line.split() if (s != '-1' and s != '-2')]
                 matrix.append(trans)
 
         # Creation of the dataset of transactions in a Numpy array and creation of the dataframe
@@ -81,23 +83,28 @@ class DataFrameNORCM:
                 self.singleSdQi()
             else:
                 self.SDcols, self.QIcols = self.multipleSdQi()
-        """
+
+        print(self.df.shape)
+        return self.df, self.SDcols, self.QIcols
+
+    # Algorithm for compute the reverse_cuthill_mckee on the df
+    def doRCM(self):
         # Compute the vector of permutations
         graph = csc_matrix(self.df.values)
         aux = reverse_cuthill_mckee(graph, False)
 
         # Generate the band matrix
-        rows = list(self.df.index.values)  # recupero i valori degli indici (righe)
+        # recupero i valori degli indici (righe)
+        rows = list(self.df.index.values)
         rows2 = []
         for i in aux:
-            rows2.append(rows[i])  # li riordino secondo gli indici salvati in aux
+            # li riordino secondo gli indici salvati in aux
+            rows2.append(rows[i])
         self.df = self.df.reindex(rows2)  # carico il nuovo indice
         cols = list(self.df.columns.values)  # recupero i valori delle colonne
         cols2 = []
         for i in aux:
             cols2.append(cols[i])
         self.df = self.df[cols2]
-        
-        """
-        print(self.df.shape)
-        return self.df, self.SDcols, self.QIcols
+
+        return self.df
