@@ -7,7 +7,7 @@ from mlxtend.preprocessing import TransactionEncoder
 from sklearn.utils import shuffle
 
 
-class DataFrame:
+class DataFrameNORCM:
     # Constructor
     def __init__(self, namefile, size, sd, qi, maxsize):
         self.nameFile = namefile
@@ -32,7 +32,7 @@ class DataFrame:
     def multipleSdQi(self):
         QIvalues = []
         SDvalues = []
-        for _ in range(0, len(self.sd)):
+        for _ in range(0,len(self.sd)):
             dfCols = self.df.sample(self.qi + self.sd[_], axis=1).columns.values
             QIcols = dfCols[:self.qi]
             SDcols = dfCols[self.qi:]
@@ -41,8 +41,6 @@ class DataFrame:
         return SDvalues, QIvalues
 
     def df_creation(self):
-
-
         # Reading file
         path = os.path.join(os.getcwd(), self.nameFile)
         matrix = []
@@ -73,13 +71,9 @@ class DataFrame:
         self.df = self.df.iloc[0:self.size, 0:self.size]
         self.df = shuffle(self.df)
 
-
-
-
         # Plot of the initial dataset
-        plot(self.df, "Initial Dataset")
+        plot(self.df, "Initial Dataset NORCM")
 
-        """
         # If the dimension is less than self.maxSize, select quasi-identifiers and sensitive datas on the
         # dataframe cut
         if self.size <= self.maxSize:
@@ -88,7 +82,6 @@ class DataFrame:
             else:
                 self.SDcols, self.QIcols = self.multipleSdQi()
         """
-
         # Compute the vector of permutations
         graph = csc_matrix(self.df.values)
         aux = reverse_cuthill_mckee(graph, False)
@@ -104,5 +97,7 @@ class DataFrame:
         for i in aux:
             cols2.append(cols[i])
         self.df = self.df[cols2]
-
+        
+        """
+        print(self.df.shape)
         return self.df, self.SDcols, self.QIcols
