@@ -93,11 +93,11 @@ class DataFrameNORCM:
         aux = reverse_cuthill_mckee(graph, False)
 
         # Generate the band matrix
-        # recupero i valori degli indici (righe)
+        # Retrieve the values of the indices (rows)
         rows = list(self.df.index.values)
         rows2 = []
         for i in aux:
-            # li riordino secondo gli indici salvati in aux
+            # li riordino secondo gli indici salvati in aux we rearrange them by the indices saved in aux
             rows2.append(rows[i])
         self.df = self.df.reindex(rows2)  # carico il nuovo indice
         cols = list(self.df.columns.values)  # recupero i valori delle colonne

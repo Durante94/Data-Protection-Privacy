@@ -211,7 +211,7 @@ def make_group(df, SDvals, QIvals, p, alpha, hist, size, remaining):
         df = df.iloc[0:0]
 
         if group_SD:
-            print("We have still some SD: ", group_SD)
+            print("We still have some SD: ", group_SD)
             sdResult.append(group_SD)
         else:
             print("We don't have SD anymore: ", group_SD)
