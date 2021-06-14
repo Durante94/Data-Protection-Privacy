@@ -71,7 +71,7 @@ if __name__ == "__main__":
             # Timer end
             end_time = time.time() - start_time
 
-            print("the execution time for the privacy degree %s is %s seconds" % (p_satisfied[i], round(end_time, 2)))
+            print("The execution time for the privacy degree %s is %s seconds" % (p_satisfied[i], round(end_time, 2)))
             print("KL Divergence:", KL)
             print("---------END OF EXECUTION %s---------" % (i+1))
             exec_time.append(round(end_time, 2))
