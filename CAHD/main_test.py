@@ -23,7 +23,7 @@ if __name__ == "__main__":
     nameFile = None
     dsSelect = 0
     while dsSelect != 1 and dsSelect != 2:
-        print("which dataset do you want to execute? 1 or 2?")
+        print("Which dataset do you want to execute? 1 or 2?")
         dsSelect = int(input())
     if dsSelect == 1:
         maxSize = 497
@@ -71,7 +71,7 @@ if __name__ == "__main__":
             # Timer end
             end_time = time.time() - start_time
 
-            print("the execution time for the privacy degree %s is %s seconds" % (p_satisfied[i], round(end_time, 2)))
+            print("The execution time for the privacy degree %s is %s seconds" % (p_satisfied[i], round(end_time, 2)))
             print("KL Divergence:", KL)
             print("---------END OF EXECUTION %s---------" % (i+1))
             exec_time.append(round(end_time, 2))

@@ -11,7 +11,7 @@ warnings.filterwarnings("ignore")
 
 if __name__ == "__main__":
     # numero di item
-    size = 500
+    size = 1000
     # Grado di Privacy
     p = [4, 6, 8, 10, 12, 14, 16, 18, 20]
     # numero di item sensibili

@@ -42,7 +42,6 @@ class DataFrame:
 
     def df_creation(self):
 
-
         # Reading file
         path = os.path.join(os.getcwd(), self.nameFile)
         matrix = []
@@ -73,12 +72,8 @@ class DataFrame:
         self.df = self.df.iloc[0:self.size, 0:self.size]
         self.df = shuffle(self.df)
 
-
-
-
         # Plot of the initial dataset
         plot(self.df, "Initial Dataset")
-
 
         # If the dimension is less than self.maxSize, select quasi-identifiers and sensitive datas on the
         # dataframe cut
@@ -88,18 +83,17 @@ class DataFrame:
             else:
                 self.SDcols, self.QIcols = self.multipleSdQi()
 
-
         # Compute the vector of permutations
         graph = csc_matrix(self.df.values)
         aux = reverse_cuthill_mckee(graph, False)
 
         # Generate the band matrix
-        rows = list(self.df.index.values)  # recupero i valori degli indici (righe)
+        rows = list(self.df.index.values)  # Retrieve the values of the indices (rows)
         rows2 = []
         for i in aux:
-            rows2.append(rows[i])  # li riordino secondo gli indici salvati in aux
-        self.df = self.df.reindex(rows2)  # carico il nuovo indice
-        cols = list(self.df.columns.values)  # recupero i valori delle colonne
+            rows2.append(rows[i])  # in aux we rearrange them by the indices saved in aux
+        self.df = self.df.reindex(rows2)  # inserting the new index
+        cols = list(self.df.columns.values)  # retrieving the values from the columns
         cols2 = []
         for i in aux:
             cols2.append(cols[i])
