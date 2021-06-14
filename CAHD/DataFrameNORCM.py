@@ -97,10 +97,10 @@ class DataFrameNORCM:
         rows = list(self.df.index.values)
         rows2 = []
         for i in aux:
-            # li riordino secondo gli indici salvati in aux we rearrange them by the indices saved in aux
+            # in aux we rearrange them by the indices saved in aux
             rows2.append(rows[i])
-        self.df = self.df.reindex(rows2)  # carico il nuovo indice
-        cols = list(self.df.columns.values)  # recupero i valori delle colonne
+        self.df = self.df.reindex(rows2)  # inserting the new index
+        cols = list(self.df.columns.values)  # retrieving the values from the columns
         cols2 = []
         for i in aux:
             cols2.append(cols[i])
