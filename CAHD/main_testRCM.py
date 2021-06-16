@@ -24,7 +24,7 @@ if __name__ == "__main__":
     nameFile = None
     dsSelect = 0
     while dsSelect != 1 and dsSelect != 2:
-        print("which dataset do you want to execute? 1 or 2?")
+        print("Which dataset do you want to execute? 1 or 2?")
         dsSelect = int(input())
     if dsSelect == 1:
         maxSize = 497
