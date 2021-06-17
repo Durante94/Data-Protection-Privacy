@@ -6,6 +6,7 @@ from Plot import plot
 from DataFrameNORCM import DataFrameNORCM
 from PlotBench import plotBench
 import time
+import numpy as np
 
 warnings.filterwarnings("ignore")
 
@@ -86,6 +87,9 @@ if __name__ == "__main__":
     # print("execution times:", total_exec_time)
     # print("kl-divergence:", total_kl_divergence)
     # print("dataframe creation time:", round(dfCreationTime, 2))
+    print("---------average execution times without RCM---------")
+    print("m = 10:", np.mean(total_exec_time[0]))
+    print("m = 20:", np.mean(total_exec_time[1]))
     plotBench(total_exec_time, total_kl_divergence, total_p_satisfied, sd)
 
     # WITH RCM
@@ -142,5 +146,8 @@ if __name__ == "__main__":
     # print("execution times:", total_exec_time)
     # print("kl-divergence:", total_kl_divergence)
     # print("dataframe creation time:", round(dfCreationTime, 2))
+    print("---------average execution times with RCM---------")
+    print("m = 10:", np.mean(total_exec_time[0]))
+    print("m = 20:", np.mean(total_exec_time[1]))
     plotBench(total_exec_time, total_kl_divergence, total_p_satisfied, sd)
 

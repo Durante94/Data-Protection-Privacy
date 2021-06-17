@@ -1,4 +1,5 @@
 import warnings
+from statistics import mean
 from KLdivergence import KLdivergence
 from DataFrame import DataFrame
 from CAHD import CAHD
@@ -16,7 +17,7 @@ if __name__ == "__main__":
     # numero di item sensibili
     sd = [10, 20]
     # numero di Quasi-Identifier
-    qi = 5
+    qi = 30
     # valore di alpha desiderato (ottimale = 3)
     alpha = 3
 
@@ -32,6 +33,7 @@ if __name__ == "__main__":
         maxSize = 3340
         nameFile = "dataset/BMS2.txt"
 
+    # dataframe creation time
     dfTimeStart = time.time()
     # Dataframe creation
     create_df = DataFrame(nameFile, size, sd, qi, maxSize)
@@ -80,6 +82,8 @@ if __name__ == "__main__":
         total_kl_divergence.append(kl_divergence)
         total_p_satisfied.append(p_satisfied)
 
+    for _ in range(0, len(sd)):
+        print("the mean execution time for %s sensitive data is %s" % (sd[_], round(mean(total_exec_time[_]),2)))
     # print("privacy degrees satisfied:", total_p_satisfied)
     # print("execution times:", total_exec_time)
     # print("kl-divergence:", total_kl_divergence)
